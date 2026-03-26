@@ -5,20 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// export function softmax(values: number[], temperature: number) {
-//   const beta = 1 / temperature;
-//   const sum = values
-//     .map((v) => Math.exp(beta * v))
-//     .reduce((prev, current) => prev + current, 0);
-//
-//   return values.map((v) => Math.exp(beta * v) / sum);
-// }
-
 export function softmax(values: number[], temperature: number) {
   const beta = 1 / temperature;
-  // const sum = values
-  //   .map((v) => Math.exp(beta * v))
-  //   .reduce((prev, current) => prev + current, 0);
 
   return values.map((v) => Math.pow(v, beta));
 }
@@ -48,4 +36,8 @@ export function getTrailingWordsAsString(input: string, number: number) {
   const words = input.trim().split(" ");
 
   return words.slice(-number).join(" ");
+}
+
+export function tokenizeWords(input: string) {
+  return input.toLowerCase().match(/\w+/g);
 }

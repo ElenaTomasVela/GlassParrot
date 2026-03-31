@@ -89,8 +89,8 @@ export const ModelTrainingView = (props: {}) => {
                   id="topK"
                   min={1}
                   max={10}
-                  value={[data.modelParams.topP]}
-                  onValueChange={actions.handleTopPChange}
+                  value={[data.modelParams.topK]}
+                  onValueChange={actions.handleTopKChange}
                 />
               </Field>
               <Field
@@ -195,7 +195,7 @@ export const ModelTrainingView = (props: {}) => {
               Borrar ejemplos
             </Button>
           </div>
-          <Button type="button" onClick={actions.handleTrainModel}>
+          <Button type="button" onClick={actions.compileModel}>
             <Cog />
             Entrenar
           </Button>
@@ -207,9 +207,14 @@ export const ModelTrainingView = (props: {}) => {
       <H1>Prueba</H1>
       <div className="flex flex-col gap-2 items-start">
         <Textarea
-          placeholder={`Escribe al menos ${data.modelParams.ngramSize} palabras como entrada para tu modelo...`}
+          placeholder={
+            data.model === undefined
+              ? "Entrena un modelo antes de probar."
+              : `Escribe al menos ${data.model.ngramSize} palabras como entrada para tu modelo...`
+          }
           value={data.modelInput}
           onChange={actions.handleModelInputChange}
+          disabled={!data.model}
         />
         <Button
           onClick={actions.handleGenerateNextWord}
@@ -225,7 +230,7 @@ export const ModelTrainingView = (props: {}) => {
                 {data.modelInput
                   .trim()
                   .split(" ")
-                  .slice(-data.modelParams.ngramSize)
+                  .slice(-data.model!.ngramSize)
                   .join(" ")}
               </b>
             </div>

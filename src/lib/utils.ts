@@ -11,7 +11,7 @@ export function softmax(values: number[], temperature: number) {
   return values.map((v) => Math.pow(v, beta));
 }
 
-export function topPSelect(values: number[], topP: number) {
+export function topKSelect(values: number[], topP: number) {
   return values.map((v, i) => (i < topP ? v : 0));
 }
 

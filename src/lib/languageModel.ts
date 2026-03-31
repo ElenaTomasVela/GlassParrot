@@ -1,15 +1,13 @@
 import { useState } from "react";
 import type { LanguageModelProps } from "./types";
-import { getTrailingWordsAsString } from "./utils";
+import { LanguageModel } from "./languageModelClass";
 
 export function useLanguageModel() {
   const [examples, setExamples] = useState<string[]>([]);
   const [ngramSize, setNgramSize] = useState(3);
   const [temperature, setTemperature] = useState(1);
-  const [topP, setTopP] = useState(10);
-  const [compiledModel, setCompiledModel] = useState<
-    Record<string, Record<string, number>>
-  >({});
+  const [topK, setTopK] = useState(10);
+  const [model, setModel] = useState<LanguageModel>();
 
   const addExample = (example: string) => {
     setExamples((previous) => [...previous, example]);
@@ -24,44 +22,8 @@ export function useLanguageModel() {
     setExamples([]);
   };
 
-  const getNextWordProbabilities = (input: string) => {
-    const truncatedInput = getTrailingWordsAsString(input, 1);
-
-    return compiledModel[truncatedInput] || {};
-  };
-
-  const generateNextWord = (input: string) => {
-    // TODO: Add binary search and random choosing
-    //
-    const truncatedInput = getTrailingWordsAsString(input, 1);
-    const possibilities = compiledModel[truncatedInput] || {};
-
-    if (!Object.keys(possibilities).length) {
-      return "palabra";
-    }
-
-    const chosenPosition = Math.floor(
-      Math.random() * Object.keys(possibilities).length,
-    );
-
-    return Object.keys(possibilities)[chosenPosition];
-  };
-
-  const compileModel = (examples: string[]) => {
-    setCompiledModel({
-      palabra: {
-        test: 48,
-        prueba: 12,
-      },
-      test: {
-        palabra: 5,
-        prueba: 9,
-      },
-      prueba: {
-        palabra: 10,
-        test: 7,
-      },
-    });
+  const compileModel = () => {
+    setModel(new LanguageModel(ngramSize, temperature, topK, examples));
   };
 
   return {
@@ -69,18 +31,15 @@ export function useLanguageModel() {
       examples,
       ngramSize,
       temperature,
-      topP,
-      // smoothing
+      topK,
     } as LanguageModelProps,
-    isModelAvailable: !!Object.keys(compiledModel).length,
+    model,
     addExample,
     removeExample,
     removeAllExamples,
-    getNextWordProbabilities,
-    generateNextWord,
     setNgramSize,
     setTemperature,
-    setTopP,
+    setTopK,
     compileModel,
   };
 }

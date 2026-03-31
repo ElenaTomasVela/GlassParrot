@@ -3,7 +3,7 @@ import {
   normalize,
   normalizePercentage,
   softmax,
-  topPSelect,
+  topKSelect,
 } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
 import { useRef, useState, type ChangeEvent } from "react";
@@ -12,15 +12,13 @@ export const useController = () => {
   const {
     modelParams,
     addExample,
-    generateNextWord,
-    getNextWordProbabilities,
-    isModelAvailable,
     compileModel,
     setNgramSize,
     setTemperature,
-    setTopP,
+    setTopK,
     removeExample,
     removeAllExamples,
+    model,
   } = useLanguageModel();
 
   const [modelInput, setModelInput] = useState("");
@@ -34,12 +32,12 @@ export const useController = () => {
     }
   };
 
-  const handleTrainModel = () => {
-    compileModel(modelParams.examples);
-  };
-
   const handleGenerateNextWord = () => {
-    setModelInput((previous) => previous + " " + generateNextWord(previous));
+    if (!model) return;
+
+    setModelInput(
+      (previous) => previous + " " + model.generateNextWord(previous),
+    );
   };
 
   const handleModelInputChange = (
@@ -56,8 +54,8 @@ export const useController = () => {
     setTemperature(temperature);
   };
 
-  const handleTopPChange = ([topP]: [number]) => {
-    setTopP(topP);
+  const handleTopKChange = ([topP]: [number]) => {
+    setTopK(topP);
   };
 
   const handleUploadedFiles = (contents: string[]) => {
@@ -101,21 +99,17 @@ export const useController = () => {
       {
         data: normalizePercentage(
           softmax(
-            topPSelect(exampleDataArray, modelParams.topP),
+            topKSelect(exampleDataArray, modelParams.topK),
             modelParams.temperature,
           ),
         ),
-        // data: softmax(
-        //   topPSelect(exampleDataArray, modelParams.topP),
-        //   modelParams.temperature,
-        // ),
         backgroundColor: "#0060f0",
         barPercentage: 0.8,
       },
     ],
   };
 
-  const nextWordStats = getNextWordProbabilities(modelInput);
+  const nextWordStats = model?.getNextWordProbabilities(modelInput) || {};
 
   const nextWordBarData: ChartData<"bar"> = {
     labels: Object.keys(nextWordStats),
@@ -143,6 +137,7 @@ export const useController = () => {
 
   return {
     data: {
+      model,
       modelParams,
       modelInput,
       isAdvancedModeEnabled,
@@ -152,7 +147,8 @@ export const useController = () => {
       nextWordPieData,
       nextWordPieOptions,
       isGenerateNextWordDisabled:
-        !isModelAvailable ||
+        !model ||
+        !modelInput ||
         modelInput.trim().split(" ").length < modelParams.ngramSize,
     },
     actions: {
@@ -167,8 +163,8 @@ export const useController = () => {
       handleDeleteAllExamples,
       handleUploadedFiles,
       handleTemperatureChange,
-      handleTopPChange,
-      handleTrainModel,
+      handleTopKChange,
+      compileModel,
     },
   };
 };

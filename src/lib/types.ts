@@ -3,7 +3,7 @@ export type SmoothOptions = "Laplace";
 export interface LanguageModelProps {
   examples: string[];
   ngramSize: number;
-  topP: number;
+  topK: number;
   temperature: number;
   smoothing?: SmoothOptions;
 }

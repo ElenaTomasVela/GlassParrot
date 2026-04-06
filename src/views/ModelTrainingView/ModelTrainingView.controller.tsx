@@ -6,7 +6,7 @@ import {
   topKSelect,
 } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, useTransition, type ChangeEvent } from "react";
 
 export const useController = () => {
   const {
@@ -69,6 +69,10 @@ export const useController = () => {
     removeAllExamples();
   };
 
+  const handleCompileModel = async () => {
+    compileModel();
+  };
+
   const exampleChartOptions: ChartOptions<"bar"> = {
     indexAxis: "y",
     layout: {
@@ -122,14 +126,6 @@ export const useController = () => {
     ],
   };
 
-  const nextWordPieOptions: ChartOptions<"pie"> = {
-    plugins: {
-      // colors: {
-      //   enabled: true,
-      // },
-    },
-  };
-
   const nextWordPieData: ChartData<"pie"> = {
     labels: Object.keys(nextWordStats),
     datasets: [{ data: normalizePercentage(Object.values(nextWordStats)) }],
@@ -145,7 +141,6 @@ export const useController = () => {
       exampleChartOptions,
       nextWordBarData,
       nextWordPieData,
-      nextWordPieOptions,
       isGenerateNextWordDisabled:
         !model ||
         !modelInput ||
@@ -164,7 +159,7 @@ export const useController = () => {
       handleUploadedFiles,
       handleTemperatureChange,
       handleTopKChange,
-      compileModel,
+      handleCompileModel,
     },
   };
 };

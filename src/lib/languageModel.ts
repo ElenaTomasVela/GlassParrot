@@ -22,8 +22,15 @@ export function useLanguageModel() {
     setExamples([]);
   };
 
-  const compileModel = () => {
-    setModel(new LanguageModel(ngramSize, temperature, topK, examples));
+  const compileModel = async () => {
+    // TODO: Add a web worker to prevent UI hanging
+    const model = await LanguageModel.compileModel(
+      ngramSize,
+      temperature,
+      topK,
+      examples,
+    );
+    setModel(model);
   };
 
   return {

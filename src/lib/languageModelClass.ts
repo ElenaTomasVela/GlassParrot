@@ -5,33 +5,43 @@ export class LanguageModel {
   temperature: number;
   topK: number;
 
-  model: Record<string, Record<string, number>>;
+  model!: Record<string, Record<string, number>>;
 
-  constructor(
+  private constructor(ngramSize: number, temperature: number, topK: number) {
+    this.ngramSize = ngramSize;
+    this.temperature = temperature;
+    this.topK = topK;
+  }
+
+  static async compileModel(
     ngramSize: number,
     temperature: number,
     topK: number,
     examples: string[],
-  ) {
-    this.ngramSize = ngramSize;
-    this.temperature = temperature;
-    this.topK = topK;
+  ): Promise<LanguageModel> {
+    const newModel = new LanguageModel(ngramSize, temperature, topK);
 
     const tokens = tokenizeWords(examples.join(" "));
     if (!tokens) throw new Error("Invalid tokens received");
 
-    const counter: Record<string, Record<string, number>> = {};
+    return new Promise((resolve) => {
+      console.log("LM: Training model");
 
-    for (let index = 0; index < tokens.length - ngramSize - 1; index++) {
-      const ngram = tokens.slice(index, index + ngramSize).join(" ");
-      const targetWord = tokens[index + ngramSize + 1];
+      const counter: Record<string, Record<string, number>> = {};
 
-      if (counter[ngram] == undefined) counter[ngram] = {};
+      for (let index = 0; index < tokens.length - ngramSize - 1; index++) {
+        const ngram = tokens.slice(index, index + ngramSize).join(" ");
+        const targetWord = tokens[index + ngramSize + 1];
 
-      counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
-    }
+        if (counter[ngram] == undefined) counter[ngram] = {};
 
-    this.model = counter;
+        counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
+      }
+
+      newModel.model = counter;
+
+      resolve(newModel);
+    });
   }
 
   getNextWordProbabilities = (input: string) => {
@@ -42,7 +52,7 @@ export class LanguageModel {
     if (!possibilities) return {};
 
     const entries = Object.entries(possibilities)
-      .sort((a, b) => a[1] - b[1])
+      .sort(([, a], [, b]) => a - b)
       .reverse()
       .slice(0, this.topK);
 

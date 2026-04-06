@@ -11,7 +11,7 @@ import {
 import { Slider } from "@/components/Slider";
 import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
-import { Cog, Plus, Trash, Upload } from "lucide-react";
+import { Cog, LoaderCircle, Plus, Trash, Upload } from "lucide-react";
 import { useController } from "./ModelTrainingView.controller";
 import UnderlinedWords from "@/components/UnderlinedWords";
 import FileUpload from "@/components/FileUpload/FileUpload";
@@ -195,7 +195,7 @@ export const ModelTrainingView = (props: {}) => {
               Borrar ejemplos
             </Button>
           </div>
-          <Button type="button" onClick={actions.compileModel}>
+          <Button type="button" onClick={actions.handleCompileModel}>
             <Cog />
             Entrenar
           </Button>

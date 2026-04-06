@@ -41,3 +41,18 @@ export function getTrailingWordsAsString(input: string, number: number) {
 export function tokenizeWords(input: string) {
   return input.toLowerCase().match(/\w+/g);
 }
+
+export function weightedChoice(weightRecord: Record<string, number>) {
+  const weights = Object.values(weightRecord);
+  const weightSum = weights.reduce((prev, next) => prev + next, 0);
+
+  const choice = Math.random() * weightSum;
+
+  let sum = 0;
+  const cumulSums = weights.map((n) => (sum += n));
+
+  // TODO: Add binary search
+  const chosenPosition = cumulSums.findIndex((n) => n >= choice);
+
+  return chosenPosition;
+}

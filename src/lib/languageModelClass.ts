@@ -1,4 +1,8 @@
-import { getTrailingWordsAsString, tokenizeWords } from "./utils";
+import {
+  getTrailingWordsAsString,
+  tokenizeWords,
+  weightedChoice,
+} from "./utils";
 
 export class LanguageModel {
   ngramSize: number;
@@ -25,8 +29,6 @@ export class LanguageModel {
     if (!tokens) throw new Error("Invalid tokens received");
 
     return new Promise((resolve) => {
-      console.log("LM: Training model");
-
       const counter: Record<string, Record<string, number>> = {};
 
       for (let index = 0; index < tokens.length - ngramSize - 1; index++) {
@@ -39,6 +41,8 @@ export class LanguageModel {
       }
 
       newModel.model = counter;
+
+      // TODO: Add postprocessing to handle temperature in weights
 
       resolve(newModel);
     });
@@ -67,10 +71,7 @@ export class LanguageModel {
       return "NADA";
     }
 
-    // TODO: Add binary search and proper random choosing
-    const chosenPosition = Math.floor(
-      Math.random() * Object.keys(possibilities).length,
-    );
+    const chosenPosition = weightedChoice(possibilities);
 
     return Object.keys(possibilities)[chosenPosition];
   };

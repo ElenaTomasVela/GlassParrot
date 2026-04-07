@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { Field, FieldGroup } from "@/components/Field";
+import FileUpload from "@/components/FileUpload/FileUpload";
 import { Label } from "@/components/Label";
 import {
   Select,
@@ -11,12 +12,11 @@ import {
 import { Slider } from "@/components/Slider";
 import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
-import { Cog, LoaderCircle, Plus, Trash, Upload } from "lucide-react";
-import { useController } from "./ModelTrainingView.controller";
-import UnderlinedWords from "@/components/UnderlinedWords";
-import FileUpload from "@/components/FileUpload/FileUpload";
 import H1 from "@/components/Typography";
+import UnderlinedWords from "@/components/UnderlinedWords";
+import { Cog, Plus, Trash } from "lucide-react";
 import { Bar, Pie } from "react-chartjs-2";
+import { useController } from "./ModelTrainingView.controller";
 
 export const ModelTrainingView = (props: {}) => {
   const { data, actions } = useController();

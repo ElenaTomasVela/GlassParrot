@@ -40,9 +40,14 @@ export class LanguageModel {
         counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
       }
 
-      newModel.model = counter;
+      for (const ngram of Object.keys(counter)) {
+        for (const targetWord of Object.keys(counter[ngram])) {
+          const value = counter[ngram][targetWord];
+          counter[ngram][targetWord] = Math.pow(value, 1 / temperature);
+        }
+      }
 
-      // TODO: Add postprocessing to handle temperature in weights
+      newModel.model = counter;
 
       resolve(newModel);
     });

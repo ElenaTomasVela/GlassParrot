@@ -1,12 +1,7 @@
 import { useLanguageModel } from "@/lib/languageModel";
-import {
-  normalize,
-  normalizePercentage,
-  softmax,
-  topKSelect,
-} from "@/lib/utils";
+import { normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
-import { useRef, useState, useTransition, type ChangeEvent } from "react";
+import { useState } from "react";
 
 export const useController = () => {
   const {

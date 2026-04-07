@@ -31,9 +31,9 @@ export class LanguageModel {
     return new Promise((resolve) => {
       const counter: Record<string, Record<string, number>> = {};
 
-      for (let index = 0; index < tokens.length - ngramSize - 1; index++) {
+      for (let index = 0; index < tokens.length - ngramSize; index++) {
         const ngram = tokens.slice(index, index + ngramSize).join(" ");
-        const targetWord = tokens[index + ngramSize + 1];
+        const targetWord = tokens[index + ngramSize];
 
         if (counter[ngram] == undefined) counter[ngram] = {};
 

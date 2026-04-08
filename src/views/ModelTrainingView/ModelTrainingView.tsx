@@ -111,7 +111,10 @@ export const ModelTrainingView = (props: {}) => {
                 >
                   Suavizado
                 </Label>
-                <Select defaultValue="none">
+                <Select
+                  defaultValue="none"
+                  onValueChange={actions.handleSmoothingChange}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -173,7 +176,7 @@ export const ModelTrainingView = (props: {}) => {
                 </div>
               ))
             ) : (
-              <span className="text-sm text-gray-400 text-center self-center text-balance items-center flex h-full">
+              <span className="text-sm text-muted-foreground text-center self-center text-balance items-center flex h-full">
                 No hay ejemplos. Añade alguno mediante el panel de la izquierda.
               </span>
             )}

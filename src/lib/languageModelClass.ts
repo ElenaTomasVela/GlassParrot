@@ -4,48 +4,49 @@ import {
   weightedChoice,
 } from "./utils";
 
+export type ModelSmoothingType =
+  | "none"
+  | "laplace"
+  | "backoff"
+  | "interpolated";
+
 export class LanguageModel {
   ngramSize: number;
   temperature: number;
   topK: number;
+  smoothing: ModelSmoothingType;
 
   model!: Record<string, Record<string, number>>;
 
-  private constructor(ngramSize: number, temperature: number, topK: number) {
+  private constructor(
+    ngramSize: number,
+    temperature: number,
+    topK: number,
+    smoothing: ModelSmoothingType,
+  ) {
     this.ngramSize = ngramSize;
     this.temperature = temperature;
     this.topK = topK;
+    this.smoothing = smoothing;
   }
 
   static async compileModel(
     ngramSize: number,
     temperature: number,
     topK: number,
+    smoothing: ModelSmoothingType,
     examples: string[],
   ): Promise<LanguageModel> {
-    const newModel = new LanguageModel(ngramSize, temperature, topK);
+    const newModel = new LanguageModel(ngramSize, temperature, topK, smoothing);
 
     const tokens = tokenizeWords(examples.join(" "));
     if (!tokens) throw new Error("Invalid tokens received");
 
     return new Promise((resolve) => {
-      const counter: Record<string, Record<string, number>> = {};
-
-      for (let index = 0; index < tokens.length - ngramSize; index++) {
-        const ngram = tokens.slice(index, index + ngramSize).join(" ");
-        const targetWord = tokens[index + ngramSize];
-
-        if (counter[ngram] == undefined) counter[ngram] = {};
-
-        counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
-      }
-
-      for (const ngram of Object.keys(counter)) {
-        for (const targetWord of Object.keys(counter[ngram])) {
-          const value = counter[ngram][targetWord];
-          counter[ngram][targetWord] = Math.pow(value, 1 / temperature);
-        }
-      }
+      const counter: Record<
+        string,
+        Record<string, number>
+      > = newModel.buildRecord(tokens);
 
       newModel.model = counter;
 
@@ -80,4 +81,41 @@ export class LanguageModel {
 
     return Object.keys(possibilities)[chosenPosition];
   };
+
+  private buildRecord(tokens: RegExpMatchArray) {
+    const counter: Record<string, Record<string, number>> = {};
+
+    const ngramIters =
+      this.smoothing === "backoff" || this.smoothing === "interpolated"
+        ? [...Array(this.ngramSize).keys()].map((i) => i + 1)
+        : [this.ngramSize];
+
+    for (const ngramSize of ngramIters) {
+      LanguageModel.addNgramCounts(tokens, ngramSize, counter);
+    }
+
+    for (const ngram of Object.keys(counter)) {
+      for (const targetWord of Object.keys(counter[ngram])) {
+        const value = counter[ngram][targetWord];
+        counter[ngram][targetWord] = Math.pow(value, 1 / this.temperature);
+      }
+    }
+
+    return counter;
+  }
+
+  private static addNgramCounts(
+    tokens: RegExpMatchArray,
+    ngramSize: number,
+    counter: Record<string, Record<string, number>>,
+  ) {
+    for (let index = 0; index < tokens.length - ngramSize; index++) {
+      const ngram = tokens.slice(index, index + ngramSize).join(" ");
+      const targetWord = tokens[index + ngramSize];
+
+      if (counter[ngram] == undefined) counter[ngram] = {};
+
+      counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
+    }
+  }
 }

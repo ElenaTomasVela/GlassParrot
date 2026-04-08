@@ -1,5 +1,6 @@
 import { useLanguageModel } from "@/lib/languageModel";
-import { normalizePercentage, softmax, topKSelect } from "@/lib/utils";
+import type { ModelSmoothingType } from "@/lib/languageModelClass";
+import { cssvar, normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ export const useController = () => {
     setTopK,
     removeExample,
     removeAllExamples,
+    setSmoothing,
     model,
   } = useLanguageModel();
 
@@ -51,6 +53,10 @@ export const useController = () => {
 
   const handleTopKChange = ([topP]: [number]) => {
     setTopK(topP);
+  };
+
+  const handleSmoothingChange = (smoothing: ModelSmoothingType) => {
+    setSmoothing(smoothing);
   };
 
   const handleUploadedFiles = (contents: string[]) => {
@@ -102,7 +108,7 @@ export const useController = () => {
             modelParams.temperature,
           ),
         ),
-        backgroundColor: "#0060f0",
+        backgroundColor: cssvar("--chart-1"),
         barPercentage: 0.8,
       },
     ],
@@ -115,7 +121,7 @@ export const useController = () => {
     datasets: [
       {
         data: normalizePercentage(Object.values(nextWordStats)),
-        backgroundColor: "#0060f0",
+        backgroundColor: cssvar("--chart-1"),
         barPercentage: 0.8,
       },
     ],
@@ -123,7 +129,18 @@ export const useController = () => {
 
   const nextWordPieData: ChartData<"pie"> = {
     labels: Object.keys(nextWordStats),
-    datasets: [{ data: normalizePercentage(Object.values(nextWordStats)) }],
+    datasets: [
+      {
+        data: normalizePercentage(Object.values(nextWordStats)),
+        backgroundColor: [
+          cssvar("--chart-1"),
+          cssvar("--chart-2"),
+          cssvar("--chart-3"),
+          cssvar("--chart-4"),
+          cssvar("--chart-5"),
+        ],
+      },
+    ],
   };
 
   return {
@@ -154,6 +171,7 @@ export const useController = () => {
       handleUploadedFiles,
       handleTemperatureChange,
       handleTopKChange,
+      handleSmoothingChange,
       handleCompileModel,
     },
   };

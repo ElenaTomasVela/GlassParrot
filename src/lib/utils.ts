@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function cssvar(name: string) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name);
+}
+
+
 export function softmax(values: number[], temperature: number) {
   const beta = 1 / temperature;
 

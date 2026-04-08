@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { LanguageModelProps } from "./types";
-import { LanguageModel } from "./languageModelClass";
+import { LanguageModel, type ModelSmoothingType } from "./languageModelClass";
 
 export function useLanguageModel() {
   const [examples, setExamples] = useState<string[]>([]);
@@ -8,6 +8,7 @@ export function useLanguageModel() {
   const [temperature, setTemperature] = useState(1);
   const [topK, setTopK] = useState(10);
   const [model, setModel] = useState<LanguageModel>();
+  const [smoothing, setSmoothing] = useState<ModelSmoothingType>("none");
 
   const addExample = (example: string) => {
     setExamples((previous) => [...previous, example]);
@@ -28,6 +29,7 @@ export function useLanguageModel() {
       ngramSize,
       temperature,
       topK,
+      smoothing,
       examples,
     );
     setModel(model);
@@ -47,6 +49,7 @@ export function useLanguageModel() {
     setNgramSize,
     setTemperature,
     setTopK,
+    setSmoothing,
     compileModel,
   };
 }

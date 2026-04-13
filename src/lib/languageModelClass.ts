@@ -58,7 +58,8 @@ export class LanguageModel {
     const truncatedInput = getTrailingWordsAsString(input, this.ngramSize);
     if (!truncatedInput) return {};
 
-    const possibilities = this.model[truncatedInput];
+    const possibilities = this.calculateSmoothedProbabilities(input);
+
     if (!possibilities) return {};
 
     const entries = Object.entries(possibilities)
@@ -68,6 +69,34 @@ export class LanguageModel {
 
     return Object.fromEntries(entries);
   };
+
+  calculateSmoothedProbabilities(input: string) {
+    if (this.smoothing == "none") {
+      const selectedNgram = getTrailingWordsAsString(input, this.ngramSize);
+      return this.model[selectedNgram];
+    }
+
+    let possibilities: Record<string, number> = {};
+
+    for (let i = this.ngramSize; i >= 1; i--) {
+      const selectedNgram = getTrailingWordsAsString(input, i);
+      const currentRecord = this.model[selectedNgram] || {};
+
+      if (this.smoothing == "backoff") {
+        if (Object.keys(currentRecord).length !== 0) {
+          possibilities = currentRecord;
+          break;
+        }
+      } else if (this.smoothing == "interpolated") {
+        for (const word of Object.keys(currentRecord)) {
+          possibilities[word] ||= 0;
+          possibilities[word] += currentRecord[word] || 0;
+        }
+      }
+    }
+
+    return possibilities;
+  }
 
   generateNextWord = (input: string) => {
     const possibilities = this.getNextWordProbabilities(input);
@@ -85,13 +114,17 @@ export class LanguageModel {
   private buildRecord(tokens: RegExpMatchArray) {
     const counter: Record<string, Record<string, number>> = {};
 
-    const ngramIters =
+    const ngramIterTarget =
       this.smoothing === "backoff" || this.smoothing === "interpolated"
-        ? [...Array(this.ngramSize).keys()].map((i) => i + 1)
-        : [this.ngramSize];
+        ? 1
+        : this.ngramSize;
 
-    for (const ngramSize of ngramIters) {
-      LanguageModel.addNgramCounts(tokens, ngramSize, counter);
+    for (
+      let currentNgramSize = this.ngramSize;
+      currentNgramSize >= ngramIterTarget;
+      currentNgramSize--
+    ) {
+      LanguageModel.addNgramCounts(tokens, currentNgramSize, counter);
     }
 
     for (const ngram of Object.keys(counter)) {

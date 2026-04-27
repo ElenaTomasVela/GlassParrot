@@ -1,14 +1,10 @@
+import type { ModelSmoothingType } from "./types";
 import {
   getTrailingWordsAsString,
   tokenizeWords,
   weightedChoice,
 } from "./utils";
-
-export type ModelSmoothingType =
-  | "none"
-  | "laplace"
-  | "backoff"
-  | "interpolated";
+import type { TrainingWorkerParams } from "./modelTrainingWorker";
 
 export class LanguageModel {
   ngramSize: number;
@@ -36,21 +32,30 @@ export class LanguageModel {
     topK: number,
     smoothing: ModelSmoothingType,
     examples: string[],
+    trainingWorker: Worker,
   ): Promise<LanguageModel> {
     const newModel = new LanguageModel(ngramSize, temperature, topK, smoothing);
 
     const tokens = tokenizeWords(examples.join(" "));
     if (!tokens) throw new Error("Invalid tokens received");
 
+    const trainingParams: TrainingWorkerParams = {
+      ngramSize,
+      smoothing,
+      temperature,
+      tokens,
+    };
+
     return new Promise((resolve) => {
-      const counter: Record<
-        string,
-        Record<string, number>
-      > = newModel.buildRecord(tokens);
+      trainingWorker.addEventListener("message", (e) => {
+        const counter: Record<string, Record<string, number>> = e.data;
 
-      newModel.model = counter;
+        newModel.model = counter;
+        resolve(newModel);
+        trainingWorker.terminate();
+      });
 
-      resolve(newModel);
+      trainingWorker.postMessage(trainingParams);
     });
   }
 

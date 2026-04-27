@@ -198,10 +198,16 @@ export const ModelTrainingView = (props: {}) => {
               Borrar ejemplos
             </Button>
           </div>
-          <Button type="button" onClick={actions.handleCompileModel}>
-            <Cog />
-            Entrenar
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              onClick={actions.handleCompileModel}
+              disabled={data.isTraining}
+            >
+              <Cog />
+              Entrenar
+            </Button>
+          </div>
         </div>
       </form>
 

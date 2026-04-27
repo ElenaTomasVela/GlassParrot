@@ -1,5 +1,5 @@
 import { useLanguageModel } from "@/lib/languageModel";
-import type { ModelSmoothingType } from "@/lib/languageModelClass";
+import type { ModelSmoothingType } from "@/lib/types";
 import { cssvar, normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
 import { useState } from "react";
@@ -16,6 +16,7 @@ export const useController = () => {
     removeAllExamples,
     setSmoothing,
     model,
+    isTraining,
   } = useLanguageModel();
 
   const [modelInput, setModelInput] = useState("");
@@ -157,6 +158,7 @@ export const useController = () => {
         !model ||
         !modelInput ||
         modelInput.trim().split(" ").length < modelParams.ngramSize,
+      isTraining,
     },
     actions: {
       removeExample,

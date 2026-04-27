@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LanguageModelProps } from "./types";
-import { LanguageModel, type ModelSmoothingType } from "./languageModelClass";
+import { LanguageModel } from "./languageModelClass";
+import { type ModelSmoothingType } from "./types";
 
 export function useLanguageModel() {
   const [examples, setExamples] = useState<string[]>([]);
@@ -9,6 +10,10 @@ export function useLanguageModel() {
   const [topK, setTopK] = useState(10);
   const [model, setModel] = useState<LanguageModel>();
   const [smoothing, setSmoothing] = useState<ModelSmoothingType>("none");
+  const [isTraining, setIsTraining] = useState<boolean>(false);
+
+  // Creating the worker in the hook allows cancelling
+  const trainingWorkerRef = useRef<Worker>(null);
 
   const addExample = (example: string) => {
     setExamples((previous) => [...previous, example]);
@@ -23,16 +28,30 @@ export function useLanguageModel() {
     setExamples([]);
   };
 
-  const compileModel = async () => {
-    // TODO: Add a web worker to prevent UI hanging
-    const model = await LanguageModel.compileModel(
+  const compileModel = () => {
+    // TODO: Hook it up so it can be cancelled by the user
+    trainingWorkerRef.current = new Worker(
+      new URL("./modelTrainingWorker.ts", import.meta.url),
+      {
+        type: "module",
+      },
+    );
+
+    setIsTraining(true);
+    LanguageModel.compileModel(
       ngramSize,
       temperature,
       topK,
       smoothing,
       examples,
-    );
-    setModel(model);
+      trainingWorkerRef.current,
+    )
+      .then((model) => {
+        setModel(model);
+        trainingWorkerRef.current = null;
+        setIsTraining(false);
+      })
+      .catch(() => console.log("Something was cancelled"));
   };
 
   return {
@@ -43,6 +62,7 @@ export function useLanguageModel() {
       topK,
     } as LanguageModelProps,
     model,
+    isTraining,
     addExample,
     removeExample,
     removeAllExamples,

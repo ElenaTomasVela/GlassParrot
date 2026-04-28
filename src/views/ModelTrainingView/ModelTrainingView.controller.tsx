@@ -34,7 +34,8 @@ export const useController = () => {
     if (!model) return;
 
     setModelInput(
-      (previous) => previous + " " + model.generateNextWord(previous),
+      (previous) =>
+        previous + " " + model.generateNextWord(previous.toLowerCase()),
     );
   };
 
@@ -115,7 +116,8 @@ export const useController = () => {
     ],
   };
 
-  const nextWordStats = model?.getNextWordProbabilities(modelInput) || {};
+  const nextWordStats =
+    model?.getNextWordProbabilities(modelInput.toLowerCase()) || {};
 
   const nextWordBarData: ChartData<"bar"> = {
     labels: Object.keys(nextWordStats),

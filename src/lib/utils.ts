@@ -47,6 +47,25 @@ export function tokenizeWords(input: string) {
   return input.toLowerCase().match(/\w+/g);
 }
 
+function binarySearchThreshold(sortedArray: number[], target: number) {
+  let start = 0;
+  let end = sortedArray.length - 1;
+  let result = -1;
+
+  while (start <= end) {
+    const mid = Math.floor((start + end) / 2);
+
+    if (sortedArray[mid] < target) {
+      start = mid + 1;
+    } else {
+      end = mid - 1;
+      result = mid;
+    }
+  }
+
+  return result;
+}
+
 export function weightedChoice(weightRecord: Record<string, number>) {
   const weights = Object.values(weightRecord);
   const weightSum = weights.reduce((prev, next) => prev + next, 0);
@@ -56,8 +75,7 @@ export function weightedChoice(weightRecord: Record<string, number>) {
   let sum = 0;
   const cumulSums = weights.map((n) => (sum += n));
 
-  // TODO: Add binary search
-  const chosenPosition = cumulSums.findIndex((n) => n >= choice);
+  const chosenPosition = binarySearchThreshold(cumulSums, choice);
 
   return chosenPosition;
 }

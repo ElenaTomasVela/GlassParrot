@@ -63,6 +63,7 @@ export function useLanguageModel() {
       ngramSize,
       temperature,
       topK,
+      smoothing,
     } as LanguageModelProps,
     model,
     isTraining,

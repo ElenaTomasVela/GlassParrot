@@ -44,7 +44,7 @@ export function getTrailingWordsAsString(input: string, number: number) {
 }
 
 export function tokenizeWords(input: string) {
-  return input.toLowerCase().match(/\w+/g);
+  return input.toLowerCase().match(/[a-zA-ZÀ-ÿ0-9]+/g);
 }
 
 function binarySearchThreshold(sortedArray: number[], target: number) {

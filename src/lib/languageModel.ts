@@ -38,7 +38,7 @@ export function useLanguageModel() {
     );
 
     setIsTraining(true);
-    LanguageModel.compileModel(
+    const promise = LanguageModel.compileModel(
       ngramSize,
       temperature,
       topK,
@@ -51,7 +51,10 @@ export function useLanguageModel() {
         trainingWorkerRef.current = null;
         setIsTraining(false);
       })
-      .catch(() => console.log("Something was cancelled"));
+      .catch(() => {
+        trainingWorkerRef.current = null;
+        setIsTraining(false);
+      });
   };
 
   return {

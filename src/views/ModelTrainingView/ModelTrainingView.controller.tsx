@@ -158,6 +158,7 @@ export const useController = () => {
         !model ||
         !modelInput ||
         modelInput.trim().split(" ").length < modelParams.ngramSize,
+      isTrainingButtonDisabled: isTraining || !modelParams.examples.length,
       isTraining,
     },
     actions: {

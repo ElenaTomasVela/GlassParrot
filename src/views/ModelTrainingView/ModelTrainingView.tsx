@@ -202,9 +202,9 @@ export const ModelTrainingView = (props: {}) => {
             <Button
               type="button"
               onClick={actions.handleCompileModel}
-              disabled={data.isTraining}
+              disabled={data.isTrainingButtonDisabled}
             >
-              <Cog />
+              <Cog className={`${data.isTraining && "animate-spin"}`} />
               Entrenar
             </Button>
           </div>

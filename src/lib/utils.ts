@@ -9,7 +9,6 @@ export function cssvar(name: string) {
     return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
-
 export function softmax(values: number[], temperature: number) {
   const beta = 1 / temperature;
 
@@ -38,7 +37,7 @@ export function normalizePercentage(values: number[]) {
 }
 
 export function getTrailingWordsAsString(input: string, number: number) {
-  const words = input.trim().split(" ");
+  const words = input.trim().split(/ +/);
 
   return words.slice(-number).join(" ");
 }

@@ -106,54 +106,8 @@ export class LanguageModel {
   generateNextWord = (input: string) => {
     const possibilities = this.getNextWordProbabilities(input);
 
-    // TODO: Handle non-matching words in a more appropiate manner
-    if (!Object.keys(possibilities).length) {
-      return "NADA";
-    }
-
     const chosenPosition = weightedChoice(possibilities);
 
     return Object.keys(possibilities)[chosenPosition];
   };
-
-  private buildRecord(tokens: RegExpMatchArray) {
-    const counter: Record<string, Record<string, number>> = {};
-
-    const ngramIterTarget =
-      this.smoothing === "backoff" || this.smoothing === "interpolated"
-        ? 1
-        : this.ngramSize;
-
-    for (
-      let currentNgramSize = this.ngramSize;
-      currentNgramSize >= ngramIterTarget;
-      currentNgramSize--
-    ) {
-      LanguageModel.addNgramCounts(tokens, currentNgramSize, counter);
-    }
-
-    for (const ngram of Object.keys(counter)) {
-      for (const targetWord of Object.keys(counter[ngram])) {
-        const value = counter[ngram][targetWord];
-        counter[ngram][targetWord] = Math.pow(value, 1 / this.temperature);
-      }
-    }
-
-    return counter;
-  }
-
-  private static addNgramCounts(
-    tokens: RegExpMatchArray,
-    ngramSize: number,
-    counter: Record<string, Record<string, number>>,
-  ) {
-    for (let index = 0; index < tokens.length - ngramSize; index++) {
-      const ngram = tokens.slice(index, index + ngramSize).join(" ");
-      const targetWord = tokens[index + ngramSize];
-
-      if (counter[ngram] == undefined) counter[ngram] = {};
-
-      counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
-    }
-  }
 }

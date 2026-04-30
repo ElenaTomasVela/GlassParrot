@@ -9,7 +9,7 @@ export function useLanguageModel() {
   const [temperature, setTemperature] = useState(1);
   const [topK, setTopK] = useState(10);
   const [model, setModel] = useState<LanguageModel>();
-  const [smoothing, setSmoothing] = useState<ModelSmoothingType>("none");
+  const [smoothing, setSmoothing] = useState<ModelSmoothingType>("backoff");
   const [isTraining, setIsTraining] = useState<boolean>(false);
 
   // Creating the worker in the hook allows cancelling

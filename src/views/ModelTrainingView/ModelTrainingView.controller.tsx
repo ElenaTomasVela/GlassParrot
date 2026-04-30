@@ -87,6 +87,18 @@ export const useController = () => {
     },
   };
 
+  const nextWordChartOptions: ChartOptions<"bar"> = {
+    maintainAspectRatio: false,
+    indexAxis: "y",
+    layout: {
+      padding: 0,
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { display: false } },
+    },
+  };
+
   const exampleDataArray = [9, 7, 5, 4, 4, 4, 3, 2, 1, 0];
 
   const exampleData: ChartData<"bar"> = {
@@ -155,11 +167,14 @@ export const useController = () => {
       exampleData,
       exampleChartOptions,
       nextWordBarData,
+      nextWordChartOptions,
       nextWordPieData,
       isGenerateNextWordDisabled:
         !model ||
         !modelInput ||
-        modelInput.trim().split(" ").length < modelParams.ngramSize,
+        !Object.keys(nextWordStats).length ||
+        (modelInput.trim().split(" ").length < modelParams.ngramSize &&
+          modelParams.smoothing == "none"),
       isTrainingButtonDisabled: isTraining || !modelParams.examples.length,
       isTraining,
     },

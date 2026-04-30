@@ -17,6 +17,8 @@ import UnderlinedWords from "@/components/UnderlinedWords";
 import { Cog, Plus, Trash } from "lucide-react";
 import { Bar, Pie } from "react-chartjs-2";
 import { useController } from "./ModelTrainingView.controller";
+import type { ModelSmoothingType } from "@/lib/types";
+import { Separator } from "@/components/Separator";
 
 export const ModelTrainingView = (props: {}) => {
   const { data, actions } = useController();
@@ -112,7 +114,7 @@ export const ModelTrainingView = (props: {}) => {
                   Suavizado
                 </Label>
                 <Select
-                  defaultValue="none"
+                  defaultValue={"backoff" as ModelSmoothingType}
                   onValueChange={actions.handleSmoothingChange}
                 >
                   <SelectTrigger className="w-full">
@@ -150,7 +152,7 @@ export const ModelTrainingView = (props: {}) => {
         <div className="flex gap-4 mb-2">
           <div className="flex-1 flex flex-col gap-2">
             <Textarea
-              className="flex-1"
+              className="flex-1 resize-none"
               placeholder="Escribe texto de entrenamiento..."
               id="trainingExample"
               name="trainingExample"
@@ -214,27 +216,33 @@ export const ModelTrainingView = (props: {}) => {
       <br />
 
       <H1>Prueba</H1>
-      <div className="flex flex-col gap-2 items-start">
-        <Textarea
-          placeholder={
-            data.model === undefined
-              ? "Entrena un modelo antes de probar."
-              : `Escribe al menos ${data.model.ngramSize} palabras como entrada para tu modelo...`
-          }
-          value={data.modelInput}
-          onChange={actions.handleModelInputChange}
-          disabled={!data.model}
-        />
-        <Button
-          onClick={actions.handleGenerateNextWord}
-          disabled={data.isGenerateNextWordDisabled}
-        >
-          Generar siguiente palabra
-        </Button>
-        {!data.isGenerateNextWordDisabled && (
-          <>
+      <div className="flex gap-10">
+        <div className="flex flex-col gap-2 w-1/3 max-h-full">
+          <Textarea
+            className=""
+            placeholder={
+              data.model === undefined
+                ? "Entrena un modelo antes de probar."
+                : `Escribe al menos ${
+                    data.model.smoothing === "none" ? data.model.ngramSize : 1
+                  } palabras como entrada para tu modelo...`
+            }
+            value={data.modelInput}
+            onChange={actions.handleModelInputChange}
+            disabled={!data.model}
+          />
+          <Button
+            onClick={actions.handleGenerateNextWord}
+            disabled={data.isGenerateNextWordDisabled}
+          >
+            Generar siguiente palabra
+          </Button>
+        </div>
+        {
+          // !data.isGenerateNextWordDisabled &&
+          <div className="flex flex-col gap-3 flex-1">
             <div>
-              Probabilidades de siguiente palabra a partir del n-grama{" "}
+              Probabilidades de siguiente palabra a partir del n-grama:{" "}
               <b>
                 {data.modelInput
                   .trim()
@@ -243,22 +251,22 @@ export const ModelTrainingView = (props: {}) => {
                   .join(" ")}
               </b>
             </div>
-            <div className="flex w-full h-80">
-              <div className="flex-1 relative">
+            <div className="flex gap-2 items-center px-4 h-full">
+              <div className="flex-1 relative h-80">
                 <Bar
                   data={data.nextWordBarData}
-                  options={data.exampleChartOptions}
+                  options={data.nextWordChartOptions}
                 />
               </div>
-              <div className="flex-1 relative">
+              <div className="flex-1 relative h-80">
                 <Pie
                   data={data.nextWordPieData}
                   // options={data.nextWordPieOptions}
                 />
               </div>
             </div>
-          </>
-        )}
+          </div>
+        }
       </div>
     </div>
   );

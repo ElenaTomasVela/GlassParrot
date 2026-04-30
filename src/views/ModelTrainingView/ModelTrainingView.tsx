@@ -242,11 +242,12 @@ export const ModelTrainingView = (props: {}) => {
             <div>
               Probabilidades de siguiente palabra a partir del n-grama:{" "}
               <b>
-                {data.modelInput
-                  .trim()
-                  .split(" ")
-                  .slice(-data.model!.ngramSize)
-                  .join(" ")}
+                {!data.isGenerateNextWordDisabled &&
+                  data.modelInput
+                    .trim()
+                    .split(" ")
+                    .slice(-data.model!.ngramSize)
+                    .join(" ")}
               </b>
             </div>
             <div className="flex gap-2 items-center px-4 h-full">

@@ -103,7 +103,6 @@ export const ModelTrainingView = (props: {}) => {
                   htmlFor="smoothing"
                   title={
                     "Otras operaciones que se aplican en las probabilidades de predecir cada palabra.\n\n" +
-                    "- Laplace: Trata como si se hubiera visto todas las combinaciones de palabras al menos una vez.\n" +
                     "- Back-off: Si no encuentra ninguna palabra posible a completar, intenta repetir el proceso asumiendo " +
                     "que el tamaño del n-grama es menor, hasta encontrar al menos una coincidencia.\n" +
                     "- Interpolación: Usa la probabilidad media calculada por el modelo actual y todos los que tengan " +
@@ -122,7 +121,6 @@ export const ModelTrainingView = (props: {}) => {
                   </SelectTrigger>
                   <SelectContent position="popper">
                     <SelectItem value="none">Ninguno</SelectItem>
-                    <SelectItem value="laplace">Laplace</SelectItem>
                     <SelectItem value="backoff">Back-off</SelectItem>
                     <SelectItem value="interpolated">Interpolado</SelectItem>
                   </SelectContent>

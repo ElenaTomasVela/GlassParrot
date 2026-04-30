@@ -5,8 +5,4 @@ export interface LanguageModelProps {
   temperature: number;
   smoothing?: ModelSmoothingType;
 }
-export type ModelSmoothingType =
-  | "none"
-  | "laplace"
-  | "backoff"
-  | "interpolated";
+export type ModelSmoothingType = "none" | "backoff" | "interpolated";

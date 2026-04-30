@@ -35,7 +35,7 @@ export const useController = () => {
 
     setModelInput(
       (previous) =>
-        previous + " " + model.generateNextWord(previous.toLowerCase()),
+        previous.trim() + " " + model.generateNextWord(previous.toLowerCase()),
     );
   };
 

@@ -147,17 +147,17 @@ export const ModelTrainingView = (props: {}) => {
 
       <H1>Entrenamiento</H1>
       <form action={actions.handleTrainingExampleSubmit}>
-        <div className="flex gap-4 mb-2">
+        <div className="flex gap-2 mb-2 not-md:flex-col">
           <div className="flex-1 flex flex-col gap-2">
             <Textarea
-              className="flex-1 resize-none"
+              className="flex-1 resize-none min-h-50"
               placeholder="Escribe texto de entrenamiento..."
               id="trainingExample"
               name="trainingExample"
               required
             />
           </div>
-          <div className="border rounded-lg flex-1 p-2 flex flex-col gap-2 h-100 overflow-auto">
+          <div className="border rounded-lg flex-1 p-2 flex flex-col gap-2 h-80 max-h-80 overflow-auto">
             {data.modelParams.examples.length ? (
               data.modelParams.examples.map((example, index) => (
                 <div
@@ -182,8 +182,8 @@ export const ModelTrainingView = (props: {}) => {
             )}
           </div>
         </div>
-        <div className="flex justify-between">
-          <div className="flex gap-2 w-fit">
+        <div className="flex justify-between not-md:flex-col gap-2">
+          <div className="flex gap-2 w-fit flex-wrap">
             <Button type="submit" variant="outline" className="w-fit">
               <Plus />
               Añadir texto
@@ -200,6 +200,7 @@ export const ModelTrainingView = (props: {}) => {
           </div>
           <div className="flex gap-2">
             <Button
+              className="w-full"
               type="button"
               onClick={actions.handleCompileModel}
               disabled={data.isTrainingButtonDisabled}
@@ -214,8 +215,8 @@ export const ModelTrainingView = (props: {}) => {
       <br />
 
       <H1>Prueba</H1>
-      <div className="flex gap-10">
-        <div className="flex flex-col gap-2 w-1/3 max-h-full">
+      <div className="flex gap-2 not-md:flex-col">
+        <div className="flex flex-col gap-2">
           <Textarea
             className=""
             placeholder={
@@ -250,7 +251,7 @@ export const ModelTrainingView = (props: {}) => {
                     .join(" ")}
               </b>
             </div>
-            <div className="flex gap-2 items-center px-4 h-full">
+            <div className="flex gap-2 items-center px-4 h-full not-md:flex-col">
               <div className="flex-1 relative h-80">
                 <Bar
                   data={data.nextWordBarData}

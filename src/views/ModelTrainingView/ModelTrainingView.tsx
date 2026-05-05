@@ -14,11 +14,12 @@ import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
 import H1 from "@/components/Typography";
 import UnderlinedWords from "@/components/UnderlinedWords";
-import { Cog, Plus, Trash } from "lucide-react";
+import { Cog, Info, Plus, Trash } from "lucide-react";
 import { Bar, Pie } from "react-chartjs-2";
 import { useController } from "./ModelTrainingView.controller";
 import type { ModelSmoothingType } from "@/lib/types";
 import { Separator } from "@/components/Separator";
+import { ModelParamField } from "./components/ModelParamField";
 
 export const ModelTrainingView = (props: {}) => {
   const { data, actions } = useController();
@@ -40,34 +41,32 @@ export const ModelTrainingView = (props: {}) => {
           <H1>Configuración del modelo</H1>
           <div className="flex gap-4">
             <FieldGroup className="grid grid-cols-2 flex-1">
-              <Field
-                orientation="horizontal"
-                className="grid grid-cols-subgrid col-span-2"
+              <ModelParamField
+                name="ngramSize"
+                label="Tamaño del n-grama"
+                description={
+                  <>Número de palabras que el modelo usará como contexto.</>
+                }
               >
-                <Label
-                  htmlFor="ngramSize"
-                  title="Número de palabras que el modelo usará como contexto."
-                >
-                  Tamaño del n-grama
-                </Label>
                 <Slider
                   id="ngramSize"
-                  min={1}
-                  max={5}
                   value={[data.modelParams.ngramSize]}
                   onValueChange={actions.handleNgramSizeChange}
+                  min={1}
+                  max={5}
                 />
-              </Field>
-              <Field
-                orientation="horizontal"
-                className="grid grid-cols-subgrid col-span-2"
+              </ModelParamField>
+              <ModelParamField
+                name="temperature"
+                label="Temperatura"
+                description={
+                  <>
+                    Cuánto preferirá el modelo desviarse de las predicciones más
+                    frecuentes. Cuanta mayor sea la temperatura, más se
+                    igualarán las probabilidades de cualquier predición.
+                  </>
+                }
               >
-                <Label
-                  htmlFor="temperature"
-                  title="Cuánto preferirá el modelo desviarse de las predicciones más frecuentes. Cuanta mayor sea la temperatura, más se igualarán las probabilidades de cualquier predición."
-                >
-                  Temperatura
-                </Label>
                 <Slider
                   id="temperature"
                   min={0.1}
@@ -76,17 +75,17 @@ export const ModelTrainingView = (props: {}) => {
                   value={[data.modelParams.temperature]}
                   onValueChange={actions.handleTemperatureChange}
                 />
-              </Field>
-              <Field
-                orientation="horizontal"
-                className="grid grid-cols-subgrid col-span-2"
+              </ModelParamField>
+              <ModelParamField
+                name="topK"
+                label="Top-K"
+                description={
+                  <>
+                    El número de palabras más probables entre las que el modelo
+                    escogerá la siguiente predicción.
+                  </>
+                }
               >
-                <Label
-                  htmlFor="topK"
-                  title="El número de palabras más probables entre las que el modelo escogerá la siguiente predicción."
-                >
-                  Top-K
-                </Label>
                 <Slider
                   id="topK"
                   min={1}
@@ -94,24 +93,37 @@ export const ModelTrainingView = (props: {}) => {
                   value={[data.modelParams.topK]}
                   onValueChange={actions.handleTopKChange}
                 />
-              </Field>
-              <Field
-                orientation="horizontal"
-                className="grid grid-cols-subgrid col-span-2"
+              </ModelParamField>
+              <ModelParamField
+                label="Suavizado"
+                name="smoothing"
+                description={
+                  <div className="flex flex-col gap-2">
+                    <p>
+                      Otras operaciones que se aplican en las probabilidades de
+                      predecir cada palabra.
+                    </p>
+                    <hr />
+                    <dl className="grid grid-cols-[max-content_1fr] gap-1">
+                      <dt className="font-bold">Back-off.</dt>
+                      <dd>
+                        Si no encuentra ninguna palabra posible a completar,
+                        intenta repetir el proceso asumiendo que el tamaño del
+                        n-grama es menor, hasta encontrar al menos una
+                        coincidencia.
+                      </dd>
+                      <dt className="font-bold">Interpolación</dt>
+                      <dd>
+                        Usa la probabilidad media calculada por el modelo actual
+                        y todos los que tengan tamaño de n-grama menor. Por
+                        ejemplo, si se aplica interpolación con tamaño de
+                        n-grama 3, se calculará la probabilidad a partir de la
+                        predicción con tamaños de n-grama 3, 2 y 1.
+                      </dd>
+                    </dl>
+                  </div>
+                }
               >
-                <Label
-                  htmlFor="smoothing"
-                  title={
-                    "Otras operaciones que se aplican en las probabilidades de predecir cada palabra.\n\n" +
-                    "- Back-off: Si no encuentra ninguna palabra posible a completar, intenta repetir el proceso asumiendo " +
-                    "que el tamaño del n-grama es menor, hasta encontrar al menos una coincidencia.\n" +
-                    "- Interpolación: Usa la probabilidad media calculada por el modelo actual y todos los que tengan " +
-                    "tamaño de n-grama menor. Por ejemplo, si se aplica interpolación con tamaño de n-grama 3, se calculará " +
-                    "la probabilidad a partir de la predicción con tamaños de n-grama 3, 2 y 1."
-                  }
-                >
-                  Suavizado
-                </Label>
                 <Select
                   defaultValue={"backoff" as ModelSmoothingType}
                   onValueChange={actions.handleSmoothingChange}
@@ -125,7 +137,7 @@ export const ModelTrainingView = (props: {}) => {
                     <SelectItem value="interpolated">Interpolado</SelectItem>
                   </SelectContent>
                 </Select>
-              </Field>
+              </ModelParamField>
             </FieldGroup>
             <div className="flex-1 pl-10">
               <UnderlinedWords

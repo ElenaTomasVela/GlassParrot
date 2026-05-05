@@ -215,8 +215,8 @@ export const ModelTrainingView = (props: {}) => {
       <br />
 
       <H1>Prueba</H1>
-      <div className="flex gap-2 not-md:flex-col">
-        <div className="flex flex-col gap-2">
+      <div className="flex gap-2 not-lg:flex-col">
+        <div className="flex flex-col gap-2 flex-1">
           <Textarea
             className=""
             placeholder={
@@ -238,7 +238,6 @@ export const ModelTrainingView = (props: {}) => {
           </Button>
         </div>
         {
-          // !data.isGenerateNextWordDisabled &&
           <div className="flex flex-col gap-3 flex-1">
             <div>
               Probabilidades de siguiente palabra a partir del n-grama:{" "}
@@ -251,18 +250,15 @@ export const ModelTrainingView = (props: {}) => {
                     .join(" ")}
               </b>
             </div>
-            <div className="flex gap-2 items-center px-4 h-full not-md:flex-col">
-              <div className="flex-1 relative h-80">
+            <div className="flex gap-2 items-center px-4 h-full not-xl:flex-col">
+              <div className="flex-1 relative h-80 w-full">
                 <Bar
                   data={data.nextWordBarData}
                   options={data.nextWordChartOptions}
                 />
               </div>
               <div className="flex-1 relative h-80">
-                <Pie
-                  data={data.nextWordPieData}
-                  // options={data.nextWordPieOptions}
-                />
+                <Pie data={data.nextWordPieData} />
               </div>
             </div>
           </div>

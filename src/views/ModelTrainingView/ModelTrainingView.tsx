@@ -14,15 +14,16 @@ import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
 import H1 from "@/components/Typography";
 import UnderlinedWords from "@/components/UnderlinedWords";
-import { Cog, Info, Plus, Trash } from "lucide-react";
-import { Bar, Pie } from "react-chartjs-2";
-import { useController } from "./ModelTrainingView.controller";
 import type { ModelSmoothingType } from "@/lib/types";
-import { Separator } from "@/components/Separator";
+import { useTour } from "@reactour/tour";
+import { Cog, Plus, Trash } from "lucide-react";
+import { Bar, Pie } from "react-chartjs-2";
 import { ModelParamField } from "./components/ModelParamField";
+import { useController } from "./ModelTrainingView.controller";
 
-export const ModelTrainingView = (props: {}) => {
+export const ModelTrainingView = () => {
   const { data, actions } = useController();
+  const { setIsOpen } = useTour();
 
   return (
     <div>
@@ -35,6 +36,7 @@ export const ModelTrainingView = (props: {}) => {
         />
         <Label htmlFor="advancedMode">Modo avanzado</Label>
       </Field>
+      <Button onClick={() => setIsOpen(true)}>Iniciar tutorial</Button>
 
       {data.isAdvancedModeEnabled && (
         <>
@@ -157,78 +159,84 @@ export const ModelTrainingView = (props: {}) => {
         </>
       )}
 
-      <H1>Entrenamiento</H1>
-      <form action={actions.handleTrainingExampleSubmit}>
-        <div className="flex gap-2 mb-2 not-md:flex-col">
-          <div className="flex-1 flex flex-col gap-2">
-            <Textarea
-              className="flex-1 resize-none min-h-50"
-              placeholder="Escribe texto de entrenamiento..."
-              id="trainingExample"
-              name="trainingExample"
-              required
-            />
-          </div>
-          <div className="border rounded-lg flex-1 p-2 flex flex-col gap-2 h-80 max-h-80 overflow-auto">
-            {data.modelParams.examples.length ? (
-              data.modelParams.examples.map((example, index) => (
-                <div
-                  key={index}
-                  className="text-sm rounded-sm border px-2 py-1 flex justify-between"
-                >
-                  <span className="line-clamp-10">{example}</span>
-                  <Button
-                    className="min-h-full"
-                    variant="destructive"
-                    type="button"
-                    onClick={() => actions.removeExample(index)}
+      <section id="training-section">
+        <H1>Entrenamiento</H1>
+        <form action={actions.handleTrainingExampleSubmit}>
+          <div className="flex gap-2 mb-2 not-lg:flex-col">
+            <div className="flex-1 flex flex-col gap-2">
+              <Textarea
+                className="flex-1 resize-none min-h-50"
+                placeholder="Escribe texto de entrenamiento..."
+                id="trainingExample"
+                name="trainingExample"
+                required
+              />
+            </div>
+            <div
+              className="border rounded-lg flex-1 p-2 flex flex-col gap-2 h-80 max-h-80 overflow-auto"
+              id="training-data-list"
+            >
+              {data.modelParams.examples.length ? (
+                data.modelParams.examples.map((example, index) => (
+                  <div
+                    key={index}
+                    className="text-sm rounded-sm border px-2 py-1 flex justify-between"
                   >
-                    <Trash />
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <span className="text-sm text-muted-foreground text-center self-center text-balance items-center flex h-full">
-                No hay ejemplos. Añade alguno mediante el panel de la izquierda.
-              </span>
-            )}
+                    <span className="line-clamp-10">{example}</span>
+                    <Button
+                      className="min-h-full"
+                      variant="destructive"
+                      type="button"
+                      onClick={() => actions.removeExample(index)}
+                    >
+                      <Trash />
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <span className="text-sm text-muted-foreground text-center self-center text-balance items-center flex h-full">
+                  No hay ejemplos. Añade alguno mediante el panel de la
+                  izquierda.
+                </span>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between not-md:flex-col gap-2">
-          <div className="flex gap-2 w-fit flex-wrap">
-            <Button type="submit" variant="outline" className="w-fit">
-              <Plus />
-              Añadir texto
-            </Button>
-            <FileUpload onUploadConfirm={actions.handleUploadedFiles} />
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={actions.handleDeleteAllExamples}
-            >
-              <Trash />
-              Borrar ejemplos
-            </Button>
+          <div className="flex justify-between not-md:flex-col gap-2">
+            <div className="flex gap-2 w-fit flex-wrap">
+              <Button type="submit" variant="outline" className="w-fit">
+                <Plus />
+                Añadir texto
+              </Button>
+              <FileUpload onUploadConfirm={actions.handleUploadedFiles} />
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={actions.handleDeleteAllExamples}
+              >
+                <Trash />
+                Borrar ejemplos
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                className="w-full"
+                type="button"
+                onClick={actions.handleCompileModel}
+                disabled={data.isTrainingButtonDisabled}
+              >
+                <Cog className={`${data.isTraining && "animate-spin"}`} />
+                Entrenar
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              className="w-full"
-              type="button"
-              onClick={actions.handleCompileModel}
-              disabled={data.isTrainingButtonDisabled}
-            >
-              <Cog className={`${data.isTraining && "animate-spin"}`} />
-              Entrenar
-            </Button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </section>
 
       <br />
 
       <H1>Prueba</H1>
-      <div className="flex gap-2 not-lg:flex-col">
-        <div className="flex flex-col gap-2 flex-1">
+      <div className="flex gap-2 not-md:flex-col">
+        <div className="flex flex-col gap-2 flex-1" id="prediction-area">
           <Textarea
             className=""
             placeholder={

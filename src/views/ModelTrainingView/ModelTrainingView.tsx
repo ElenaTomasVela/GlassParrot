@@ -104,7 +104,7 @@ export const ModelTrainingView = (props: {}) => {
                       predecir cada palabra.
                     </p>
                     <hr />
-                    <dl className="grid grid-cols-[max-content_1fr] gap-1">
+                    <dl className="grid grid-cols-[max-content_1fr] gap-2">
                       <dt className="font-bold">Back-off.</dt>
                       <dd>
                         Si no encuentra ninguna palabra posible a completar,
@@ -112,7 +112,7 @@ export const ModelTrainingView = (props: {}) => {
                         n-grama es menor, hasta encontrar al menos una
                         coincidencia.
                       </dd>
-                      <dt className="font-bold">Interpolación</dt>
+                      <dt className="font-bold">Interpolado.</dt>
                       <dd>
                         Usa la probabilidad media calculada por el modelo actual
                         y todos los que tengan tamaño de n-grama menor. Por

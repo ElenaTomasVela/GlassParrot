@@ -9,7 +9,7 @@ export const useController = (defaultExampleIndex?: number) => {
   const defaultExample =
     defaultExampleIndex != undefined
       ? dataPresets[defaultExampleIndex]
-      : { examples: [] };
+      : { examples: [], inputData: "" };
 
   const {
     modelParams,
@@ -26,7 +26,7 @@ export const useController = (defaultExampleIndex?: number) => {
     setExamples,
   } = useLanguageModel(defaultExample.examples);
 
-  const [modelInput, setModelInput] = useState("");
+  const [modelInput, setModelInput] = useState(defaultExample.inputData);
   const [isAdvancedModeEnabled, setIsAdvancedModeEnabled] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState<number | null>(null);
 

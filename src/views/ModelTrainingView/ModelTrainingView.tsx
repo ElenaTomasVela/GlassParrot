@@ -29,13 +29,9 @@ export const ModelTrainingView = ({
   defaultExample?: number;
 }) => {
   const { data, actions } = useController(defaultExample);
-  const { setIsOpen } = useTour();
 
   return (
     <div>
-      <Button className="mb-4" onClick={() => setIsOpen(true)}>
-        Iniciar tutorial
-      </Button>
       <section id="advancedModeSection">
         <Field orientation="horizontal" className="mb-4">
           <Switch

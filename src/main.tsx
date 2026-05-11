@@ -1,32 +1,21 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
-import { TooltipProvider } from "./components/Tooltip.tsx";
-import { TourProvider } from "@reactour/tour";
-import { tutorialTourSteps } from "./lib/tour/tutorialTour.tsx";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+
+const router = createRouter({
+  routeTree,
+});
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TourProvider
-      steps={tutorialTourSteps}
-      onClickMask={() => {}}
-      className="max-w-lg!"
-      styles={{
-        popover: (base) => ({
-          ...base,
-          borderRadius: "var(--radius-md)",
-          "--reactour-accent": "var(--primary)",
-        }),
-        maskArea: (base) => ({
-          ...base,
-          rx: 8,
-        }),
-      }}
-    >
-      <TooltipProvider>
-        <App />
-      </TooltipProvider>
-    </TourProvider>
+    <RouterProvider router={router} />
   </StrictMode>,
 );

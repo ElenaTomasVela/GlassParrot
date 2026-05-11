@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import type { LanguageModelProps, ModelSmoothingType } from "../types";
 import { LanguageModel } from "./languageModelClass";
 
-export function useLanguageModel() {
-  const [examples, setExamples] = useState<string[]>([]);
+export function useLanguageModel(defaultExamples: string[] = []) {
+  const [examples, setExamples] = useState<string[]>(defaultExamples);
   const [ngramSize, setNgramSize] = useState(3);
   const [temperature, setTemperature] = useState(1);
   const [topK, setTopK] = useState(10);
@@ -28,7 +28,6 @@ export function useLanguageModel() {
   };
 
   const compileModel = () => {
-    // TODO: Hook it up so it can be cancelled by the user
     trainingWorkerRef.current = new Worker(
       new URL("./modelTrainingWorker.ts", import.meta.url),
       {

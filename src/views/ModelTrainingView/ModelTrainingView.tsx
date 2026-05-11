@@ -23,8 +23,12 @@ import { useController } from "./ModelTrainingView.controller";
 import { dataPresets } from "@/lib/modelPresets";
 import { ButtonGroup } from "@/components/ButtonGroup";
 
-export const ModelTrainingView = () => {
-  const { data, actions } = useController();
+export const ModelTrainingView = ({
+  defaultExample,
+}: {
+  defaultExample?: number;
+}) => {
+  const { data, actions } = useController(defaultExample);
   const { setIsOpen } = useTour();
 
   return (

@@ -1,11 +1,16 @@
 import { useLanguageModel } from "@/lib/languageModel/languageModel";
-import { dataPresets } from "@/lib/modelPresets";
+import { dataPresets, type DataPreset } from "@/lib/modelPresets";
 import type { ModelSmoothingType } from "@/lib/types";
 import { cssvar, normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const useController = () => {
+export const useController = (defaultExampleIndex?: number) => {
+  const defaultExample =
+    defaultExampleIndex != undefined
+      ? dataPresets[defaultExampleIndex]
+      : { examples: [] };
+
   const {
     modelParams,
     addExample,
@@ -19,7 +24,7 @@ export const useController = () => {
     model,
     isTraining,
     setExamples,
-  } = useLanguageModel();
+  } = useLanguageModel(defaultExample.examples);
 
   const [modelInput, setModelInput] = useState("");
   const [isAdvancedModeEnabled, setIsAdvancedModeEnabled] = useState(false);
@@ -86,11 +91,17 @@ export const useController = () => {
   const handleLoadPreset = () => {
     if (selectedPreset !== null) {
       const preset = dataPresets[selectedPreset];
-      console.log(preset);
       setModelInput(preset.inputData);
       setExamples(preset.examples);
     }
   };
+
+  useEffect(() => {
+    if (defaultExampleIndex !== undefined) {
+      handleCompileModel();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultExampleIndex]);
 
   const exampleChartOptions: ChartOptions<"bar"> = {
     indexAxis: "y",

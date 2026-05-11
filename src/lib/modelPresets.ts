@@ -5,7 +5,7 @@ interface ModelExamplePreset {
   modelParams: LanguageModelProps;
 }
 
-interface DataPreset {
+export interface DataPreset {
   title: string;
   inputData: string;
   examples: string[];

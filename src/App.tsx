@@ -4,10 +4,8 @@ import {
   CategoryScale,
   Chart as ChartJS,
   Colors,
-  Legend,
   LinearScale,
   PieController,
-  Title,
   Tooltip,
 } from "chart.js";
 import { Navbar } from "./components/Navbar";

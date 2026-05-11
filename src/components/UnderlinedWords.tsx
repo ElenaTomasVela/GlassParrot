@@ -14,7 +14,7 @@ export default function UnderlinedWords(props: {
   return (
     <span>
       {remainingText}{" "}
-      <span className="underline underline-offset-3 decoration-3 decoration-primary">
+      <span className="underline underline-offset-3 decoration-3 decoration-accent">
         {underlinedText}
       </span>
     </span>

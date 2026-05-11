@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import type { LanguageModelProps } from "./types";
+import { useRef, useState } from "react";
+import type { LanguageModelProps, ModelSmoothingType } from "../types";
 import { LanguageModel } from "./languageModelClass";
-import { type ModelSmoothingType } from "./types";
 
 export function useLanguageModel() {
   const [examples, setExamples] = useState<string[]>([]);
@@ -68,6 +67,7 @@ export function useLanguageModel() {
     model,
     isTraining,
     addExample,
+    setExamples,
     removeExample,
     removeAllExamples,
     setNgramSize,

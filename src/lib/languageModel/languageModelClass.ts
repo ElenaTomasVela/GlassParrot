@@ -1,9 +1,9 @@
-import type { ModelSmoothingType } from "./types";
+import type { ModelSmoothingType } from "../types";
 import {
   getTrailingWordsAsString,
   tokenizeWords,
   weightedChoice,
-} from "./utils";
+} from "../utils";
 import type { TrainingWorkerParams } from "./modelTrainingWorker";
 
 export class LanguageModel {

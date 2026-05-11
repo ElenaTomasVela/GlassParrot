@@ -9,7 +9,7 @@ export default function FileUpload(props: FileUploadProps) {
     useController(props);
 
   return (
-    <ButtonGroup className="w-1/2">
+    <ButtonGroup className="flex-1">
       <Input
         className="w-fit"
         type="file"
@@ -24,7 +24,8 @@ export default function FileUpload(props: FileUploadProps) {
         onClick={onUploadButtonClick}
         disabled={!files?.length}
       >
-        Subir seleccionados
+        <Upload />
+        Subir
       </Button>
     </ButtonGroup>
   );

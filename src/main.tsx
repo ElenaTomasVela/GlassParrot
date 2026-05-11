@@ -11,9 +11,13 @@ createRoot(document.getElementById("root")!).render(
     <TourProvider
       steps={tutorialTourSteps}
       onClickMask={() => {}}
-      className="rounded-md"
-      highlightedMaskClassName="text-red-500"
+      className="max-w-lg!"
       styles={{
+        popover: (base) => ({
+          ...base,
+          borderRadius: "var(--radius-md)",
+          "--reactour-accent": "var(--primary)",
+        }),
         maskArea: (base) => ({
           ...base,
           rx: 8,

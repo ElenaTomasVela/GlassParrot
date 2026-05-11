@@ -1,4 +1,5 @@
-import { useLanguageModel } from "@/lib/languageModel";
+import { useLanguageModel } from "@/lib/languageModel/languageModel";
+import { dataPresets } from "@/lib/modelPresets";
 import type { ModelSmoothingType } from "@/lib/types";
 import { cssvar, normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -17,10 +18,12 @@ export const useController = () => {
     setSmoothing,
     model,
     isTraining,
+    setExamples,
   } = useLanguageModel();
 
   const [modelInput, setModelInput] = useState("");
   const [isAdvancedModeEnabled, setIsAdvancedModeEnabled] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState<number | null>(null);
 
   const handleTrainingExampleSubmit = (data: FormData) => {
     const trainingExample = data.get("trainingExample");
@@ -74,6 +77,19 @@ export const useController = () => {
 
   const handleCompileModel = async () => {
     compileModel();
+  };
+
+  const handleSelectedPresetChange = (value: string) => {
+    setSelectedPreset(Number(value));
+  };
+
+  const handleLoadPreset = () => {
+    if (selectedPreset !== null) {
+      const preset = dataPresets[selectedPreset];
+      console.log(preset);
+      setModelInput(preset.inputData);
+      setExamples(preset.examples);
+    }
   };
 
   const exampleChartOptions: ChartOptions<"bar"> = {
@@ -193,6 +209,8 @@ export const useController = () => {
       handleTopKChange,
       handleSmoothingChange,
       handleCompileModel,
+      handleSelectedPresetChange,
+      handleLoadPreset,
     },
   };
 };

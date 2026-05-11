@@ -1,4 +1,4 @@
-import type { ModelSmoothingType } from "./types";
+import type { ModelSmoothingType } from "../types";
 
 export interface TrainingWorkerParams {
   tokens: RegExpMatchArray;

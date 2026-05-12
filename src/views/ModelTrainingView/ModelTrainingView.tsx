@@ -12,7 +12,7 @@ import {
 import { Slider } from "@/components/Slider";
 import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
-import H1 from "@/components/Typography";
+import { H1 } from "@/components/Typography";
 import UnderlinedWords from "@/components/UnderlinedWords";
 import type { ModelSmoothingType } from "@/lib/types";
 import { useTour } from "@reactour/tour";

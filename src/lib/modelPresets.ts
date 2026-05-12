@@ -28,7 +28,7 @@ export const dataPresets: DataPreset[] = [
     ],
   },
   {
-    title: "Profesiones de padres/madres",
+    title: "Profesiones sesgadas de padres/madres",
     inputData: "Mi madre es",
     examples: [
       "Mi madre es enfermera.",

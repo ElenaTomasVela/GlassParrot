@@ -251,13 +251,6 @@ export const tutorialTourSteps: StepType[] = [
           palabra "está", como por ejemplo "Veo que hoy está". ¿Puedes pulsar el
           botón?
         </p>
-        <br />
-        <p>
-          ¡Ambos comportamientos, en realidad, podrían ser estrategias válidas!
-          El modelo actual, de hecho, usa la segunda estrategia (denominada
-          Back-off), con lo que puede intentar ser más flexible a la hora de
-          generar palabras.
-        </p>
       </>
     ),
   },

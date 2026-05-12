@@ -13,7 +13,6 @@ import {
 import { Navbar } from "../components/Navbar";
 import { TooltipProvider } from "../components/Tooltip";
 import { tutorialTourSteps } from "../lib/tour/tutorialTour";
-
 export const Route = createRootRoute({
   component: RootComponent,
 });
@@ -31,8 +30,13 @@ ChartJS.register(
 function RootComponent() {
   return (
     <>
-      <Navbar />
       <TourProvider
+        afterOpen={() => {
+          document.body.style.overflowY = "hidden";
+        }}
+        beforeClose={() => {
+          document.body.style.overflowY = "auto";
+        }}
         steps={tutorialTourSteps}
         onClickMask={() => {}}
         className="max-w-lg!"
@@ -49,6 +53,7 @@ function RootComponent() {
         }}
       >
         <TooltipProvider>
+          <Navbar />
           <div className="px-8 py-4">
             <Outlet />
           </div>

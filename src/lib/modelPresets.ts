@@ -1,26 +1,8 @@
-import type { LanguageModelProps } from "./types";
-
-interface ModelExamplePreset {
-  inputData: string;
-  modelParams: LanguageModelProps;
-}
-
 export interface DataPreset {
   title: string;
   inputData: string;
   examples: string[];
 }
-
-export const faceDescriptionPreset: ModelExamplePreset = {
-  inputData: "",
-  modelParams: {
-    smoothing: "none",
-    examples: ["El cielo es azul.", "Mi perro es negro."],
-    ngramSize: 3,
-    temperature: 0.3,
-    topK: 10,
-  },
-};
 
 export const dataPresets: DataPreset[] = [
   {
@@ -43,6 +25,35 @@ export const dataPresets: DataPreset[] = [
       "La palabra ordenador tiene 4 vocales.",
       "La palabra botella tiene 3 vocales.",
       "La palabra auténtico tiene 5 vocales.",
+    ],
+  },
+  {
+    title: "Profesiones de padres/madres",
+    inputData: "Mi madre es",
+    examples: [
+      "Mi madre es enfermera.",
+      "Mi padre es doctor.",
+      "Mi padre es arquitecto.",
+      "Su padre es albañil",
+      "Su padre es ingeniero",
+      "Su padre es mecánico",
+      "Su padre es bombero",
+      "Su padre es carpintero",
+      "Tu padre es electricista",
+      "Tu padre es deportista",
+      "Tu padre es granjero",
+      "Tu padre es pescador",
+      "Tu padre es camionero",
+      "Su padre es pintor",
+      "Su padre es piloto",
+      "Mi madre es azafata",
+      "Mi madre es limpiadora",
+      "Mi madre es dentista",
+      "Mi madre es psicóloga",
+      "Su madre es cocinera",
+      "Su madre es ama de casa",
+      "Su madre es secretaria",
+      "Su madre es profesora",
     ],
   },
 ];

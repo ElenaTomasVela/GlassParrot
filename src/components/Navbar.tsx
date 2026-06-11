@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Separator } from "./Separator";
 import type { ReactNode } from "react";
-import LogoSvg from "/public/GlassParrot.svg";
+import LogoSvg from "../assets/GlassParrot.svg";
+import GithubSvg from "../assets/github.svg";
 
 const NavLink = ({ to, children }: { to: string; children: ReactNode }) => {
   return (
@@ -19,15 +20,20 @@ const NavLink = ({ to, children }: { to: string; children: ReactNode }) => {
 export const Navbar = () => {
   return (
     <>
-      <div className="flex gap-2 px-8 py-2 items-center">
-        <Link to="/" className="flex items-center text-sm font-black gap-2">
-          <img src={LogoSvg} className="size-10 my-1" />
-          <span>GlassParrot</span>
-        </Link>
+      <div className="flex gap-2 px-8 py-2 items-center justify-between">
+        <div className="flex gap-2 items-center">
+          <Link to="/" className="flex items-center text-sm font-black gap-2">
+            <img src={LogoSvg} className="size-10 my-1" />
+            <span>GlassParrot</span>
+          </Link>
+          <NavLink to="/">Inicio</NavLink>
+          <NavLink to="/tutorial">Tutorial</NavLink>
+          <NavLink to="/evaluation">Ponte a prueba</NavLink>
+        </div>
 
-        <NavLink to="/">Inicio</NavLink>
-        <NavLink to="/tutorial">Tutorial</NavLink>
-        <NavLink to="/evaluation">Ponte a prueba</NavLink>
+        <a href="https://github.com/ElenaTomasVela/GlassParrot">
+          <img src={GithubSvg} className="size-7" />
+        </a>
       </div>
       <Separator />
     </>

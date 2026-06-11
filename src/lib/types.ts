@@ -3,6 +3,6 @@ export interface LanguageModelProps {
   ngramSize: number;
   topK: number;
   temperature: number;
-  smoothing?: ModelSmoothingType;
+  smoothing: ModelSmoothingType;
 }
 export type ModelSmoothingType = "none" | "backoff" | "interpolated";

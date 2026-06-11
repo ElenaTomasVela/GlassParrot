@@ -36,14 +36,14 @@ export function useLanguageModel(defaultExamples: string[] = []) {
     );
 
     setIsTraining(true);
-    const promise = LanguageModel.compileModel(
+    const props: LanguageModelProps = {
       ngramSize,
       temperature,
       topK,
       smoothing,
       examples,
-      trainingWorkerRef.current,
-    )
+    };
+    const promise = LanguageModel.compileModel(props, trainingWorkerRef.current)
       .then((model) => {
         setModel(model);
         trainingWorkerRef.current = null;

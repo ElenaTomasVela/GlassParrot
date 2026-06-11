@@ -1,3 +1,5 @@
+declare const self: Worker;
+
 import type { ModelSmoothingType } from "../types";
 
 export interface TrainingWorkerParams {

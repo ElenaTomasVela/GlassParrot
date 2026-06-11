@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function cssvar(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name);
+}
+
 export function normalize(values: number[]) {
   const min = Math.min(...values);
   const max = Math.max(...values);

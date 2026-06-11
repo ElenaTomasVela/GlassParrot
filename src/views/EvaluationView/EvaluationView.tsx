@@ -18,7 +18,7 @@ export default function EvaluationView() {
         <li>Tamaño de n-grama: 3</li>
         <li>Temperatura: Media</li>
         <li>Top-k: 10</li>
-        <li>Suavizado: Back-off</li>
+        <li>Suavizado: Ninguno</li>
       </ul>
 
       <br />

@@ -1,6 +1,7 @@
 import type { LanguageModelProps, ModelSmoothingType } from "../types";
 import {
   getTrailingWordsAsString,
+  normalizeRecordValues,
   tokenizeWords,
   weightedChoice,
 } from "../utils";
@@ -100,9 +101,13 @@ export class LanguageModel {
           break;
         }
       } else if (this.smoothing == "interpolated") {
+        // Normalize so that all n-gram sizes hold same importance
+
+        const normalizedValues = normalizeRecordValues(currentRecord);
         for (const word of Object.keys(currentRecord)) {
           possibilities[word] ||= 0;
-          possibilities[word] += currentRecord[word] || 0;
+
+          possibilities[word] += normalizedValues[word] || 0;
         }
       }
     }

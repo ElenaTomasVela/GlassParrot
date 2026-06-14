@@ -1,7 +1,6 @@
 import { LanguageModel } from "@/lib/languageModel/languageModelClass";
 import type { LanguageModelProps } from "@/lib/types";
 import {
-  averageRecordValues,
   coefVariation,
   normalizeRecordValues,
   range,

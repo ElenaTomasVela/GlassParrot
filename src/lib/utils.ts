@@ -14,10 +14,66 @@ export function normalize(values: number[]) {
   const max = Math.max(...values);
 
   if (min == max) {
-    return values.map((v) => 0.5);
+    return values.map(() => 0.5);
   }
 
   return values.map((v) => (v - min) / (max - min));
+}
+
+export function normalizeRecordValues(
+  record: Record<string, number>,
+): Record<string, number> {
+  const values = Object.values(record);
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+
+  if (min == max) {
+    return Object.fromEntries(Object.entries(record).map(([k]) => [k, 0.5]));
+  }
+
+  return Object.fromEntries(
+    Object.entries(record).map(([k, v]) => [k, (v - min) / (max - min)]),
+  );
+}
+
+export function averageRecordValues(records: Record<string, number>[]) {
+  const unifiedRecords: Record<string, number[]> = {};
+  const n = records.length;
+  records.forEach((record) => {
+    Object.entries(record).forEach(([k, v]) => {
+      unifiedRecords[k] ||= [];
+      unifiedRecords[k].push(v);
+    });
+  });
+
+  return Object.fromEntries(
+    Object.entries(unifiedRecords).map(([k, v]) => [k, sum(v) / n]),
+  );
+}
+
+export function range(stop: number, start: number = 0) {
+  return Array.from({ length: stop - start }, (_, k) => k + start);
+}
+
+function sum(numbers: number[]) {
+  return numbers.reduce((a, b) => a + b);
+}
+
+function mean(numbers: number[]) {
+  return sum(numbers) / numbers.length;
+}
+
+export function stdDeviation(numbers: number[]) {
+  const n = numbers.length;
+  const mean = sum(numbers) / n;
+  return Math.sqrt(sum(numbers.map((x) => Math.pow(x - mean, 2))));
+}
+
+export function coefVariation(numbers: number[]) {
+  const mn = mean(numbers);
+  const stddev = stdDeviation(numbers);
+  return stddev / mn;
 }
 
 export function getTrailingWordsAsString(input: string, number: number) {

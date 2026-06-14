@@ -37,9 +37,8 @@ export function normalizeRecordValues(
   );
 }
 
-export function averageRecordValues(records: Record<string, number>[]) {
+function aggregateRecords(records: Record<string, number>[]) {
   const unifiedRecords: Record<string, number[]> = {};
-  const n = records.length;
   records.forEach((record) => {
     Object.entries(record).forEach(([k, v]) => {
       unifiedRecords[k] ||= [];
@@ -47,8 +46,14 @@ export function averageRecordValues(records: Record<string, number>[]) {
     });
   });
 
+  return unifiedRecords;
+}
+
+export function sumRecordValues(records: Record<string, number>[]) {
+  const unifiedRecords = aggregateRecords(records);
+
   return Object.fromEntries(
-    Object.entries(unifiedRecords).map(([k, v]) => [k, sum(v) / n]),
+    Object.entries(unifiedRecords).map(([k, v]) => [k, sum(v)]),
   );
 }
 

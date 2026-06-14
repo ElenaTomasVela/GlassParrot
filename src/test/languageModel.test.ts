@@ -5,8 +5,9 @@ import {
   coefVariation,
   normalizeRecordValues,
   range,
+  sumRecordValues,
 } from "@/lib/utils";
-import { test, expect, describe, beforeEach } from "bun:test";
+import { test, expect, describe } from "bun:test";
 
 const exampleText = [
   "This is an example sentence that is very long for testing language models",
@@ -16,7 +17,7 @@ const exampleText = [
 const defaultParams: LanguageModelProps = {
   ngramSize: 1,
   examples: exampleText,
-  temperature: 0.1,
+  temperature: 1,
   topK: 10,
   smoothing: "none",
 };
@@ -158,10 +159,13 @@ describe("Smoothing is applied correctly:", () => {
       normalizeRecordValues(model.getNextWordProbabilities("that is very")),
     );
 
-    const averageIndivProbs = averageRecordValues(individualProbs);
+    const averageIndivProbs = sumRecordValues(individualProbs);
+
     const normalizedInterpolatedProbs =
       normalizeRecordValues(interpolatedProbs);
 
-    expect(normalizedInterpolatedProbs).toEqual(averageIndivProbs);
+    expect(normalizedInterpolatedProbs).toEqual(
+      normalizeRecordValues(averageIndivProbs),
+    );
   });
 });

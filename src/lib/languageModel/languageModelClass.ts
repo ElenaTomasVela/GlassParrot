@@ -1,6 +1,7 @@
-import type { ModelSmoothingType } from "../types";
+import type { LanguageModelProps, ModelSmoothingType } from "../types";
 import {
   getTrailingWordsAsString,
+  normalizeRecordValues,
   tokenizeWords,
   weightedChoice,
 } from "../utils";
@@ -27,11 +28,7 @@ export class LanguageModel {
   }
 
   static async compileModel(
-    ngramSize: number,
-    temperature: number,
-    topK: number,
-    smoothing: ModelSmoothingType,
-    examples: string[],
+    { ngramSize, temperature, topK, smoothing, examples }: LanguageModelProps,
     trainingWorker: Worker,
   ): Promise<LanguageModel> {
     const newModel = new LanguageModel(ngramSize, temperature, topK, smoothing);
@@ -67,7 +64,9 @@ export class LanguageModel {
 
     if (!possibilities) return {};
 
-    const entries = Object.entries(possibilities)
+    const possibilitiesAfterTemp = this.applyTemperature(possibilities);
+
+    const entries = Object.entries(possibilitiesAfterTemp)
       .sort(([, a], [, b]) => a - b)
       .reverse()
       .slice(0, this.topK);
@@ -75,7 +74,16 @@ export class LanguageModel {
     return Object.fromEntries(entries);
   };
 
-  calculateSmoothedProbabilities(input: string) {
+  private applyTemperature(input: Record<string, number>) {
+    return Object.fromEntries(
+      Object.entries(input).map(([key, value]) => [
+        key,
+        Math.pow(value, 1 / this.temperature),
+      ]),
+    );
+  }
+
+  private calculateSmoothedProbabilities(input: string) {
     if (this.smoothing == "none") {
       const selectedNgram = getTrailingWordsAsString(input, this.ngramSize);
       return this.model[selectedNgram];
@@ -93,9 +101,13 @@ export class LanguageModel {
           break;
         }
       } else if (this.smoothing == "interpolated") {
+        // Normalize so that all n-gram sizes hold same importance
+
+        const normalizedValues = normalizeRecordValues(currentRecord);
         for (const word of Object.keys(currentRecord)) {
           possibilities[word] ||= 0;
-          possibilities[word] += currentRecord[word] || 0;
+
+          possibilities[word] += normalizedValues[word] || 0;
         }
       }
     }

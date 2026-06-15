@@ -1,3 +1,5 @@
+declare const self: Worker;
+
 import type { ModelSmoothingType } from "../types";
 
 export interface TrainingWorkerParams {
@@ -52,10 +54,8 @@ function addNgramCounts(
 }
 
 self.onmessage = (e: MessageEvent<TrainingWorkerParams>) => {
-  console.log("Starting training!");
   const { ngramSize, smoothing, temperature, tokens } = e.data;
   const counter = buildRecord(tokens, smoothing, ngramSize, temperature);
 
   self.postMessage(counter);
-  console.log("Finished training!");
 };

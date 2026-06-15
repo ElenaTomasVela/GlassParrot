@@ -6,17 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function cssvar(name: string) {
-    return getComputedStyle(document.documentElement).getPropertyValue(name);
-}
-
-export function softmax(values: number[], temperature: number) {
-  const beta = 1 / temperature;
-
-  return values.map((v) => Math.pow(v, beta));
-}
-
-export function topKSelect(values: number[], topP: number) {
-  return values.map((v, i) => (i < topP ? v : 0));
+  return getComputedStyle(document.documentElement).getPropertyValue(name);
 }
 
 export function normalize(values: number[]) {
@@ -24,22 +14,83 @@ export function normalize(values: number[]) {
   const max = Math.max(...values);
 
   if (min == max) {
-    return values.map((v) => 0.5);
+    return values.map(() => 0.5);
   }
 
   return values.map((v) => (v - min) / (max - min));
 }
 
-export function normalizePercentage(values: number[]) {
-  const sum = values.reduce((prev, current) => prev + current, 0);
+export function normalizeRecordValues(
+  record: Record<string, number>,
+): Record<string, number> {
+  const values = Object.values(record);
 
-  return values.map((v) => (v / sum) * 100);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+
+  if (min == max) {
+    return Object.fromEntries(Object.entries(record).map(([k]) => [k, 0.5]));
+  }
+
+  return Object.fromEntries(
+    Object.entries(record).map(([k, v]) => [k, (v - min) / (max - min)]),
+  );
+}
+
+function aggregateRecords(records: Record<string, number>[]) {
+  const unifiedRecords: Record<string, number[]> = {};
+  records.forEach((record) => {
+    Object.entries(record).forEach(([k, v]) => {
+      unifiedRecords[k] ||= [];
+      unifiedRecords[k].push(v);
+    });
+  });
+
+  return unifiedRecords;
+}
+
+export function sumRecordValues(records: Record<string, number>[]) {
+  const unifiedRecords = aggregateRecords(records);
+
+  return Object.fromEntries(
+    Object.entries(unifiedRecords).map(([k, v]) => [k, sum(v)]),
+  );
+}
+
+export function range(stop: number, start: number = 0) {
+  return Array.from({ length: stop - start }, (_, k) => k + start);
+}
+
+function sum(numbers: number[]) {
+  return numbers.reduce((a, b) => a + b, 0);
+}
+
+function mean(numbers: number[]) {
+  return sum(numbers) / numbers.length;
+}
+
+export function stdDeviation(numbers: number[]) {
+  const n = numbers.length;
+  const mean = sum(numbers) / n;
+  return Math.sqrt(sum(numbers.map((x) => Math.pow(x - mean, 2))));
+}
+
+export function coefVariation(numbers: number[]) {
+  const mn = mean(numbers);
+  const stddev = stdDeviation(numbers);
+  return stddev / mn;
 }
 
 export function getTrailingWordsAsString(input: string, number: number) {
   const words = input.trim().split(/ +/);
 
   return words.slice(-number).join(" ");
+}
+
+export function getBeginningWordsAsString(input: string, number: number) {
+  const words = input.trim().split(/ +/);
+
+  return words.slice(0, -number - 1).join(" ");
 }
 
 export function tokenizeWords(input: string) {
@@ -77,4 +128,24 @@ export function weightedChoice(weightRecord: Record<string, number>) {
   const chosenPosition = binarySearchThreshold(cumulSums, choice);
 
   return chosenPosition;
+}
+
+// Functions used for calculating graphics
+
+export function normalizePercentage(values: number[]) {
+  const sum = values.reduce((prev, current) => prev + current, 0);
+
+  return values.map((v) => (v / sum) * 100);
+}
+
+// Functions used for example graphics only
+
+export function softmax(values: number[], temperature: number) {
+  const beta = 1 / temperature;
+
+  return values.map((v) => Math.pow(v, beta));
+}
+
+export function topKSelect(values: number[], topP: number) {
+  return values.map((v, i) => (i < topP ? v : 0));
 }

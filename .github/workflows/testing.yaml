@@ -2,8 +2,8 @@ name: Automated testing
 
 on:
   push:
-    branches: [main, develop]
-  pull-request:
+    branches: [main]
+  pull_request:
     branches: [main]
 
 jobs:

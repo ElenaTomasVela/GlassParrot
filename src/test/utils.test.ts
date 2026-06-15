@@ -60,7 +60,7 @@ test("Weighted choice works", () => {
     secondChoice: 4,
   };
 
-  const records = [...Array(1000)].map(() => weightedChoice(param));
+  const records = [...new Array(1000)].map(() => weightedChoice(param));
 
   expect(records.filter((v) => v == 0).length).toBeApprox(200, 50);
   expect(records.filter((v) => v == 1).length).toBeApprox(800, 50);

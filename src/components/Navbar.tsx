@@ -23,7 +23,7 @@ export const Navbar = () => {
       <div className="flex gap-2 px-8 py-2 items-center justify-between">
         <div className="flex gap-2 items-center">
           <Link to="/" className="flex items-center text-sm font-black gap-2">
-            <img src={LogoSvg} className="size-10 my-1" />
+            <img src={LogoSvg} className="size-10 my-1" alt="GlassParrot logo"/>
             <span>GlassParrot</span>
           </Link>
           <NavLink to="/">Inicio</NavLink>
@@ -32,7 +32,7 @@ export const Navbar = () => {
         </div>
 
         <a href="https://github.com/ElenaTomasVela/GlassParrot">
-          <img src={GithubSvg} className="size-7" />
+          <img src={GithubSvg} className="size-7" alt=""/>
         </a>
       </div>
       <Separator />

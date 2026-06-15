@@ -62,7 +62,7 @@ export function range(stop: number, start: number = 0) {
 }
 
 function sum(numbers: number[]) {
-  return numbers.reduce((a, b) => a + b);
+  return numbers.reduce((a, b) => a + b, 0);
 }
 
 function mean(numbers: number[]) {

@@ -43,7 +43,7 @@ export function useLanguageModel(defaultExamples: string[] = []) {
       smoothing,
       examples,
     };
-    const promise = LanguageModel.compileModel(props, trainingWorkerRef.current)
+    LanguageModel.compileModel(props, trainingWorkerRef.current)
       .then((model) => {
         setModel(model);
         trainingWorkerRef.current = null;
@@ -62,7 +62,7 @@ export function useLanguageModel(defaultExamples: string[] = []) {
       temperature,
       topK,
       smoothing,
-    } as LanguageModelProps,
+    },
     model,
     isTraining,
     addExample,

@@ -146,7 +146,7 @@ describe("Smoothing is applied correctly:", () => {
     expect(singleWordProbs).toContainAllKeys(["short", "little", "long"]);
     expect(
       singleWordProbsValues.every((v) => v === singleWordProbsValues[0]),
-      `Expected all values in ${singleWordProbs} to be equal`,
+      `Expected all values in ${Object.entries(singleWordProbs)} to be equal`,
     ).toBe(true);
 
     const interpolatedProbs =

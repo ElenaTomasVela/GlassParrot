@@ -197,17 +197,17 @@ export const ModelTrainingView = ({
               id="training-data-list"
             >
               {data.modelParams.examples.length ? (
-                data.modelParams.examples.map((example, index) => (
+                data.modelParams.examples.map((example) => (
                   <div
-                    key={index}
+                    key={example.id}
                     className="text-sm rounded-sm border px-2 py-1 flex justify-between"
                   >
-                    <span className="line-clamp-10">{example}</span>
+                    <span className="line-clamp-10">{example.example}</span>
                     <Button
                       className="min-h-full"
                       variant="destructive"
                       type="button"
-                      onClick={() => actions.removeExample(index)}
+                      onClick={() => actions.removeExample(example.id)}
                     >
                       <Trash />
                     </Button>
@@ -245,7 +245,7 @@ export const ModelTrainingView = ({
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {dataPresets.map((preset, index) => (
-                      <SelectItem value={index.toString()} key={index}>
+                      <SelectItem value={index.toString()} key={preset.title}>
                         {preset.title}
                       </SelectItem>
                     ))}

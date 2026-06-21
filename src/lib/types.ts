@@ -6,3 +6,8 @@ export interface LanguageModelProps {
   smoothing: ModelSmoothingType;
 }
 export type ModelSmoothingType = "none" | "backoff" | "interpolated";
+
+export interface Example {
+  id: string;
+  example: string;
+}

@@ -13,15 +13,10 @@ function Slider({
   max = 100,
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root>) {
-  const _values = React.useMemo(
-    () =>
-      Array.isArray(value)
-        ? value
-        : Array.isArray(defaultValue)
-          ? defaultValue
-          : [min, max],
-    [value, defaultValue, min, max],
-  );
+  const _values = React.useMemo(() => {
+    if (Array.isArray(value)) return value;
+    else return Array.isArray(defaultValue) ? defaultValue : [min, max];
+  }, [value, defaultValue, min, max]);
 
   return (
     <div className="flex gap-2">
@@ -33,7 +28,7 @@ function Slider({
         min={min}
         max={max}
         className={cn(
-          "group data-vertical:min-h-40 relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:w-auto data-vertical:flex-col cursor-pointer",
+          "group data-vertical:min-h-40 relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:w-auto data-vertical:flex-col",
           className,
         )}
         {...props}
@@ -48,17 +43,15 @@ function Slider({
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
-          <>
-            <SliderPrimitive.Thumb
-              data-slot="slider-thumb"
-              key={index}
-              className="border-ring ring-ring/50 size-4 relative aspect-square rounded-full border bg-white transition-[color,box-shadow] after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 block shrink-0 select-none disabled:pointer-events-none disabled:opacity-50"
-            >
-              <span className="absolute bottom-5 text-sm not-group-hover:opacity-0 text-center inset-x-0 transition-opacity">
-                {value}
-              </span>
-            </SliderPrimitive.Thumb>
-          </>
+          <SliderPrimitive.Thumb
+            data-slot="slider-thumb"
+            key={index}
+            className="border-ring ring-ring/50 size-4 relative aspect-square rounded-full border bg-white transition-[color,box-shadow] after:absolute after:-inset-2 hover:ring-3 focus-visible:ring-3 focus-visible:outline-hidden active:ring-3 block shrink-0 select-none disabled:pointer-events-none disabled:opacity-50"
+          >
+            <span className="absolute bottom-5 text-sm not-group-hover:opacity-0 text-center inset-x-0 transition-opacity">
+              {value}
+            </span>
+          </SliderPrimitive.Thumb>
         ))}
       </SliderPrimitive.Root>
       <span className="text-sm">{max}</span>

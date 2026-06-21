@@ -47,7 +47,7 @@ function addNgramCounts(
     const ngram = tokens.slice(index, index + ngramSize).join(" ");
     const targetWord = tokens[index + ngramSize];
 
-    if (counter[ngram] == undefined) counter[ngram] = {};
+    counter[ngram] ??= {};
 
     counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
   }

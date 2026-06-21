@@ -4,7 +4,7 @@ export interface FileUploadProps {
   onUploadConfirm: (contents: string[]) => void;
 }
 
-export const useController = (props: FileUploadProps) => {
+export const useController = (props: Readonly<FileUploadProps>) => {
   const { onUploadConfirm } = props;
   const [files, setFiles] = useState<FileList>();
 
@@ -17,7 +17,7 @@ export const useController = (props: FileUploadProps) => {
   };
 
   const onUploadButtonClick = async () => {
-    if (!files || !files.length) return;
+    if (!files?.length) return;
 
     const contents: string[] = [];
 

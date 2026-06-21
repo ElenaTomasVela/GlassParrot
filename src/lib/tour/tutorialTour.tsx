@@ -244,14 +244,12 @@ export const tutorialTourSteps: StepType[] = [
   {
     selector: "#prediction-area",
     content: (
-      <>
-        <p>
-          ¿Qué tal si lo comprobamos? Escribe en la caja de texto una frase que
-          no esté incluida en los datos de entrenamiento pero que termine con la
-          palabra "está", como por ejemplo "Veo que hoy está". ¿Puedes pulsar el
-          botón?
-        </p>
-      </>
+      <p>
+        ¿Qué tal si lo comprobamos? Escribe en la caja de texto una frase que no
+        esté incluida en los datos de entrenamiento pero que termine con la
+        palabra "está", como por ejemplo "Veo que hoy está". ¿Puedes pulsar el
+        botón?
+      </p>
     ),
   },
   {
@@ -275,12 +273,10 @@ export const tutorialTourSteps: StepType[] = [
   {
     selector: "#advancedModeSection",
     content: (
-      <>
-        <p>
-          Este interruptor de aquí activa el modo avanzado, que te deja
-          configurar el modelo a tu antojo. Prueba a activarlo.
-        </p>
-      </>
+      <p>
+        Este interruptor de aquí activa el modo avanzado, que te deja configurar
+        el modelo a tu antojo. Prueba a activarlo.
+      </p>
     ),
     resizeObservables: ["#advancedModeSection"],
   },

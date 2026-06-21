@@ -2,7 +2,7 @@ import { Button } from "@/components/Button";
 import { Field } from "@/components/Field";
 import { Label } from "@/components/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/RadioGroup";
-import { H1, H2 } from "@/components/Typography";
+import { H2 } from "@/components/Typography";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -47,9 +47,9 @@ export default function EvaluationQuestion({
           <div className="flex-1 flex flex-col gap-1">
             <b className="text-sm">Datos de entrenamiento</b>
             <div className="border rounded-lg flex-1 p-2 text-sm flex flex-col gap-2">
-              {trainingData.map((value, index) => (
+              {trainingData.map((value) => (
                 <p
-                  key={index}
+                  key={value}
                   className="border border-input rounded-md py-1 px-2"
                 >
                   {value}
@@ -74,7 +74,7 @@ export default function EvaluationQuestion({
             isAnswered && index.toString() === correctIndex;
 
           return (
-            <Field key={index} orientation="horizontal">
+            <Field key={value} orientation="horizontal">
               <RadioGroupItem
                 value={index.toString()}
                 id={`${id}-${index}`}

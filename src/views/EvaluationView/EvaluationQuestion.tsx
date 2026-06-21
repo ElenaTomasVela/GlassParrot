@@ -26,7 +26,7 @@ export default function EvaluationQuestion({
   trainingData,
   correctIndex,
   explanation,
-}: Props) {
+}: Readonly<Props>) {
   const [chosenAnswer, setChosenAnswer] = useState<string | undefined>(
     undefined,
   );

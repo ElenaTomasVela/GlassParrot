@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { ButtonGroup } from "@/components/ButtonGroup";
 import { Field, FieldGroup } from "@/components/Field";
 import FileUpload from "@/components/FileUpload/FileUpload";
 import { Label } from "@/components/Label";
@@ -14,14 +15,21 @@ import { Switch } from "@/components/Switch";
 import { Textarea } from "@/components/Textarea";
 import { H1 } from "@/components/Typography";
 import UnderlinedWords from "@/components/UnderlinedWords";
-import type { ModelSmoothingType } from "@/lib/types";
-import { useTour } from "@reactour/tour";
+import { dataPresets } from "@/lib/modelPresets";
 import { Cog, Download, Plus, Trash } from "lucide-react";
 import { Bar, Pie } from "react-chartjs-2";
 import { ModelParamField } from "./components/ModelParamField";
 import { useController } from "./ModelTrainingView.controller";
-import { dataPresets } from "@/lib/modelPresets";
-import { ButtonGroup } from "@/components/ButtonGroup";
+import type { ModelSmoothingType } from "@/lib/types";
+
+function getPredictionPlaceholder(
+  ngramSize: number,
+  smoothing: ModelSmoothingType,
+) {
+  const neededWords = smoothing === "none" ? ngramSize : 1;
+
+  return `Escribe al menos ${neededWords} palabra${neededWords === 1 ? "" : "s"} como entrada para tu modelo...`;
+}
 
 export const ModelTrainingView = ({
   defaultExample,
@@ -66,6 +74,7 @@ export const ModelTrainingView = ({
                   }
                 >
                   <Slider
+                    aria-label="Tamaño del n-grama"
                     id="ngramSize"
                     value={[data.modelParams.ngramSize]}
                     onValueChange={actions.handleNgramSizeChange}
@@ -148,7 +157,7 @@ export const ModelTrainingView = ({
                   }
                 >
                   <Select
-                    defaultValue={"backoff" as ModelSmoothingType}
+                    defaultValue={"backoff"}
                     onValueChange={actions.handleSmoothingChange}
                   >
                     <SelectTrigger className="w-full">
@@ -197,17 +206,17 @@ export const ModelTrainingView = ({
               id="training-data-list"
             >
               {data.modelParams.examples.length ? (
-                data.modelParams.examples.map((example, index) => (
+                data.modelParams.examples.map((example) => (
                   <div
-                    key={index}
+                    key={example.id}
                     className="text-sm rounded-sm border px-2 py-1 flex justify-between"
                   >
-                    <span className="line-clamp-10">{example}</span>
+                    <span className="line-clamp-10">{example.example}</span>
                     <Button
                       className="min-h-full"
                       variant="destructive"
                       type="button"
-                      onClick={() => actions.removeExample(index)}
+                      onClick={() => actions.removeExample(example.id)}
                     >
                       <Trash />
                     </Button>
@@ -245,7 +254,7 @@ export const ModelTrainingView = ({
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {dataPresets.map((preset, index) => (
-                      <SelectItem value={index.toString()} key={index}>
+                      <SelectItem value={index.toString()} key={preset.title}>
                         {preset.title}
                       </SelectItem>
                     ))}
@@ -284,11 +293,10 @@ export const ModelTrainingView = ({
             placeholder={
               data.model === undefined
                 ? "Entrena un modelo antes de probar."
-                : `Escribe al menos ${
-                    data.model.smoothing === "none"
-                      ? `${data.model.ngramSize} palabras`
-                      : "1 palabra"
-                  } como entrada para tu modelo...`
+                : getPredictionPlaceholder(
+                    data.model.ngramSize,
+                    data.model.smoothing,
+                  )
             }
             value={data.modelInput}
             onChange={actions.handleModelInputChange}

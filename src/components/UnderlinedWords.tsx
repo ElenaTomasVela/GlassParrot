@@ -1,6 +1,6 @@
 export default function UnderlinedWords(props: {
-  text: string;
-  underlinedWords: number;
+  readonly text: string;
+  readonly underlinedWords: number;
 }) {
   const { text, underlinedWords } = props;
 

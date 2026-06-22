@@ -1,19 +1,7 @@
-import { Field } from "@/components/Field";
-import { Label } from "@/components/Label";
-import { Slider } from "@/components/Slider";
+import { Field, FieldLabel } from "@/components/Field";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/Tooltip";
 import { Info } from "lucide-react";
-import { type Slider as SliderPrimitive } from "radix-ui";
 import type { ReactNode } from "react";
-
-interface ModelParamSliderProps extends Omit<
-  React.ComponentProps<typeof SliderPrimitive.Root>,
-  "value"
-> {
-  value: number;
-  label: string;
-  description: ReactNode;
-}
 
 interface ModelParamFieldProps {
   name: string;
@@ -35,10 +23,10 @@ export const ModelParamField = ({
     >
       <Tooltip disableHoverableContent>
         <TooltipTrigger>
-          <Label htmlFor={name}>
+          <FieldLabel htmlFor={name}>
             <Info />
             {label}
-          </Label>
+          </FieldLabel>
         </TooltipTrigger>
         <TooltipContent align="start" className="block">
           {description}

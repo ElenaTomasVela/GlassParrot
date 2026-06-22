@@ -1,36 +1,42 @@
+import type { Example } from "./types";
+
 export interface DataPreset {
   title: string;
   inputData: string;
-  examples: string[];
+  examples: Example[];
+}
+
+function createExamples(examples: string[]): Example[] {
+  return examples.map((s, i) => ({ example: s, id: i.toString() }));
 }
 
 export const dataPresets: DataPreset[] = [
   {
     title: "Hablando del tiempo",
     inputData: "Hoy el día está",
-    examples: [
+    examples: createExamples([
       "Parece que el día está soleado.",
       "Hoy el día está soleado. Es perfecto para salir a jugar.",
       "Voy a sacar a pasear a mi perro, ahora que el día está soleado.",
       "Hoy va a llover.",
       "Creo que mañana estará nublado.",
-    ],
+    ]),
   },
   {
     title: "Los modelos de lenguaje no saben contar...",
     inputData: "La palabra ejemplo tiene",
-    examples: [
+    examples: createExamples([
       "La palabra fresa tiene 2 vocales.",
       "La palabra hiena tiene 3 vocales.",
       "La palabra ordenador tiene 4 vocales.",
       "La palabra botella tiene 3 vocales.",
       "La palabra auténtico tiene 5 vocales.",
-    ],
+    ]),
   },
   {
     title: "Profesiones sesgadas de padres/madres",
     inputData: "Mi madre es",
-    examples: [
+    examples: createExamples([
       "Mi madre es enfermera.",
       "Mi padre es doctor.",
       "Mi padre es arquitecto.",
@@ -54,6 +60,6 @@ export const dataPresets: DataPreset[] = [
       "Su madre es ama de casa",
       "Su madre es secretaria",
       "Su madre es profesora",
-    ],
+    ]),
   },
 ];

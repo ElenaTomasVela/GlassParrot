@@ -1,5 +1,5 @@
 import { useLanguageModel } from "@/lib/languageModel/languageModel";
-import { dataPresets, type DataPreset } from "@/lib/modelPresets";
+import { dataPresets } from "@/lib/modelPresets";
 import type { ModelSmoothingType } from "@/lib/types";
 import { cssvar, normalizePercentage, softmax, topKSelect } from "@/lib/utils";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 
 export const useController = (defaultExampleIndex?: number) => {
   const defaultExample =
-    defaultExampleIndex != undefined
-      ? dataPresets[defaultExampleIndex]
-      : { examples: [], inputData: "" };
+    defaultExampleIndex == undefined
+      ? { examples: [], inputData: "" }
+      : dataPresets[defaultExampleIndex];
 
   const {
     modelParams,

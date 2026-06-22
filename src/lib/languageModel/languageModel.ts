@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import type { LanguageModelProps, ModelSmoothingType } from "../types";
+import type { Example, LanguageModelProps, ModelSmoothingType } from "../types";
 import { LanguageModel } from "./languageModelClass";
 
-export function useLanguageModel(defaultExamples: string[] = []) {
-  const [examples, setExamples] = useState<string[]>(defaultExamples);
+export function useLanguageModel(defaultExamples: Example[] = []) {
+  const [examples, setExamples] = useState<Example[]>(defaultExamples);
   const [ngramSize, setNgramSize] = useState(3);
   const [temperature, setTemperature] = useState(1);
   const [topK, setTopK] = useState(10);
@@ -15,11 +15,14 @@ export function useLanguageModel(defaultExamples: string[] = []) {
   const trainingWorkerRef = useRef<Worker>(null);
 
   const addExample = (example: string) => {
-    setExamples((previous) => [...previous, example]);
+    setExamples((previous) => [
+      ...previous,
+      { id: crypto.randomUUID(), example },
+    ]);
   };
 
-  const removeExample = (index: number) => {
-    const filteredExamples = examples.filter((_, i) => index !== i);
+  const removeExample = (id: string) => {
+    const filteredExamples = examples.filter((e) => e.id !== id);
     setExamples(filteredExamples);
   };
 
@@ -41,7 +44,7 @@ export function useLanguageModel(defaultExamples: string[] = []) {
       temperature,
       topK,
       smoothing,
-      examples,
+      examples: examples.map((e) => e.example),
     };
     LanguageModel.compileModel(props, trainingWorkerRef.current)
       .then((model) => {

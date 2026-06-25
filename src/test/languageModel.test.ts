@@ -55,7 +55,10 @@ test.each(range(11, 1))("Models use Top-K of %i correctly", async (topk) => {
   const predictions = model.getNextWordProbabilities("test");
   const nPredicts = Object.keys(predictions).length;
 
-  expect(nPredicts, `Expected to get ${topk} predictions but got ${nPredicts}`);
+  expect(
+    nPredicts,
+    `Expected to get ${topk} predictions but got ${nPredicts}`,
+  ).toBe(topk);
 });
 
 describe("Temperature modifies predictions correctly", async () => {

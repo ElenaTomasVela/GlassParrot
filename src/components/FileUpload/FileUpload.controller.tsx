@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export interface FileUploadProps {
-  onUploadConfirm: (contents: string[]) => void;
+  readonly onUploadConfirm: (contents: string[]) => void;
 }
 
 export const useController = (props: Readonly<FileUploadProps>) => {

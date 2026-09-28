@@ -6,14 +6,12 @@ export interface TrainingWorkerParams {
   tokens: RegExpMatchArray;
   smoothing: ModelSmoothingType;
   ngramSize: number;
-  temperature: number;
 }
 
 function buildRecord(
   tokens: string[],
   smoothing: ModelSmoothingType,
   ngramSize: number,
-  temperature: number,
 ) {
   const counter: Record<string, Record<string, number>> = {};
 
@@ -26,13 +24,6 @@ function buildRecord(
     currentNgramSize--
   ) {
     addNgramCounts(tokens, currentNgramSize, counter);
-  }
-
-  for (const ngram of Object.keys(counter)) {
-    for (const targetWord of Object.keys(counter[ngram])) {
-      const value = counter[ngram][targetWord];
-      counter[ngram][targetWord] = Math.pow(value, 1 / temperature);
-    }
   }
 
   return counter;
@@ -54,8 +45,8 @@ function addNgramCounts(
 }
 
 self.onmessage = (e: MessageEvent<TrainingWorkerParams>) => {
-  const { ngramSize, smoothing, temperature, tokens } = e.data;
-  const counter = buildRecord(tokens, smoothing, ngramSize, temperature);
+  const { ngramSize, smoothing, tokens } = e.data;
+  const counter = buildRecord(tokens, smoothing, ngramSize);
 
   self.postMessage(counter);
 };

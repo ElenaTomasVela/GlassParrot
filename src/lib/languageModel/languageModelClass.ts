@@ -39,7 +39,6 @@ export class LanguageModel {
     const trainingParams: TrainingWorkerParams = {
       ngramSize,
       smoothing,
-      temperature,
       tokens,
     };
 

@@ -55,11 +55,11 @@ export class LanguageModel {
     });
   }
 
-  getNextWordProbabilities = (input: string) => {
+  getNextWordWeights = (input: string) => {
     const truncatedInput = getTrailingWordsAsString(input, this.ngramSize);
     if (!truncatedInput) return {};
 
-    const possibilities = this.calculateSmoothedProbabilities(input);
+    const possibilities = this.calculateSmoothedWeights(input);
 
     if (!possibilities) return {};
 
@@ -82,7 +82,7 @@ export class LanguageModel {
     );
   }
 
-  private calculateSmoothedProbabilities(input: string) {
+  private calculateSmoothedWeights(input: string) {
     if (this.smoothing == "none") {
       const selectedNgram = getTrailingWordsAsString(input, this.ngramSize);
       return this.model[selectedNgram];
@@ -115,7 +115,7 @@ export class LanguageModel {
   }
 
   generateNextWord = (input: string) => {
-    const possibilities = this.getNextWordProbabilities(input);
+    const possibilities = this.getNextWordWeights(input);
 
     const chosenPosition = weightedChoice(possibilities);
 

@@ -52,7 +52,7 @@ test.each(range(11, 1))("Models use Top-K of %i correctly", async (topk) => {
   };
 
   const model = await createModel(params);
-  const predictions = model.getNextWordProbabilities("test");
+  const predictions = model.getNextWordWeights("test");
   const nPredicts = Object.keys(predictions).length;
 
   expect(
@@ -73,7 +73,7 @@ describe("Temperature modifies predictions correctly", async () => {
       examples,
     };
     const model = await createModel(params);
-    const probabilities = model.getNextWordProbabilities("test");
+    const probabilities = model.getNextWordWeights("test");
 
     return coefVariation(Object.values(probabilities));
   };
@@ -108,7 +108,7 @@ describe("Smoothing is applied correctly:", () => {
 
     const model = await createModel(params);
 
-    const singleWordProbs = model.getNextWordProbabilities("This");
+    const singleWordProbs = model.getNextWordWeights("This");
     expect(Object.keys(singleWordProbs)).toBeEmpty();
   });
 
@@ -121,10 +121,10 @@ describe("Smoothing is applied correctly:", () => {
 
     const model = await createModel(params);
 
-    const singleWordProbs = model.getNextWordProbabilities("very");
+    const singleWordProbs = model.getNextWordWeights("very");
     expect(Object.keys(singleWordProbs)).toBeArrayOfSize(3);
 
-    const firstMatchingProbs = model.getNextWordProbabilities("there is very");
+    const firstMatchingProbs = model.getNextWordWeights("there is very");
     expect(Object.keys(firstMatchingProbs)).toBeArrayOfSize(1);
     expect(firstMatchingProbs).toContainKey("little");
   });
@@ -143,7 +143,7 @@ describe("Smoothing is applied correctly:", () => {
       ),
     );
 
-    const singleWordProbs = interpolatedModel.getNextWordProbabilities("very");
+    const singleWordProbs = interpolatedModel.getNextWordWeights("very");
     const singleWordProbsValues = Object.values(singleWordProbs);
     expect(Object.keys(singleWordProbs)).toBeArrayOfSize(3);
     expect(singleWordProbs).toContainAllKeys(["short", "little", "long"]);
@@ -153,12 +153,12 @@ describe("Smoothing is applied correctly:", () => {
     ).toBe(true);
 
     const interpolatedProbs =
-      interpolatedModel.getNextWordProbabilities("that is very");
+      interpolatedModel.getNextWordWeights("that is very");
     expect(Object.keys(interpolatedProbs)).toBeArrayOfSize(3);
     expect(interpolatedProbs).toContainAllKeys(["short", "little", "long"]);
 
     const individualProbs = separateModels.map((model) =>
-      normalizeRecordValues(model.getNextWordProbabilities("that is very")),
+      normalizeRecordValues(model.getNextWordWeights("that is very")),
     );
 
     const averageIndivProbs = sumRecordValues(individualProbs);

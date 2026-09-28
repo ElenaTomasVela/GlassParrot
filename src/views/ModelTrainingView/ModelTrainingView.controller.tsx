@@ -156,7 +156,7 @@ export const useController = (defaultExampleIndex?: number) => {
   };
 
   const nextWordStats =
-    model?.getNextWordProbabilities(modelInput.toLowerCase()) || {};
+    model?.getNextWordWeights(modelInput.toLowerCase()) || {};
 
   const nextWordBarData: ChartData<"bar"> = {
     labels: Object.keys(nextWordStats),

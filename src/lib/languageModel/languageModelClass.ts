@@ -8,7 +8,7 @@ import {
 import type { TrainingWorkerParams } from "./modelTrainingWorker";
 
 export class LanguageModel {
-  ngramSize: number;
+  contextSize: number;
   temperature: number;
   topK: number;
   smoothing: ModelSmoothingType;
@@ -16,28 +16,28 @@ export class LanguageModel {
   model!: Record<string, Record<string, number>>;
 
   private constructor(
-    ngramSize: number,
+    contextSize: number,
     temperature: number,
     topK: number,
     smoothing: ModelSmoothingType,
   ) {
-    this.ngramSize = ngramSize;
+    this.contextSize = contextSize;
     this.temperature = temperature;
     this.topK = topK;
     this.smoothing = smoothing;
   }
 
   static async compileModel(
-    { ngramSize, temperature, topK, smoothing, examples }: LanguageModelProps,
+    { contextSize, temperature, topK, smoothing, examples }: LanguageModelProps,
     trainingWorker: Worker,
   ): Promise<LanguageModel> {
-    const newModel = new LanguageModel(ngramSize, temperature, topK, smoothing);
+    const newModel = new LanguageModel(contextSize, temperature, topK, smoothing);
 
     const tokens = tokenizeWords(examples.join(" "));
     if (!tokens) throw new Error("Invalid tokens received");
 
     const trainingParams: TrainingWorkerParams = {
-      ngramSize,
+      contextSize,
       smoothing,
       tokens,
     };
@@ -56,7 +56,7 @@ export class LanguageModel {
   }
 
   getNextWordWeights = (input: string) => {
-    const truncatedInput = getTrailingWordsAsString(input, this.ngramSize);
+    const truncatedInput = getTrailingWordsAsString(input, this.contextSize);
     if (!truncatedInput) return {};
 
     const possibilities = this.calculateSmoothedWeights(input);
@@ -84,13 +84,13 @@ export class LanguageModel {
 
   private calculateSmoothedWeights(input: string) {
     if (this.smoothing == "none") {
-      const selectedNgram = getTrailingWordsAsString(input, this.ngramSize);
+      const selectedNgram = getTrailingWordsAsString(input, this.contextSize);
       return this.model[selectedNgram];
     }
 
     let possibilities: Record<string, number> = {};
 
-    for (let i = this.ngramSize; i >= 1; i--) {
+    for (let i = this.contextSize; i >= 1; i--) {
       const selectedNgram = getTrailingWordsAsString(input, i);
       const currentRecord = this.model[selectedNgram] || {};
 

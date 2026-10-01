@@ -15,7 +15,7 @@ export default function EvaluationView() {
         parámetros:
       </p>
       <ul className="text-sm list-disc pl-10 mt-1">
-        <li>Tamaño de n-grama: 3</li>
+        <li>Tamaño de contexto: 3</li>
         <li>Temperatura: Media</li>
         <li>Top-k: 10</li>
         <li>Suavizado: Ninguno</li>
@@ -26,7 +26,7 @@ export default function EvaluationView() {
       <EvaluationQuestion
         id="question1"
         title="Pregunta 1"
-        description="Dados los datos de entrada, ¿qué n-grama será el que el modelo use de referencia para generar la siguiente palabra?"
+        description="Dados los datos de entrada, ¿qué contexto será el que el modelo use de referencia para generar la siguiente palabra?"
         inputData="Parece que hoy el cielo está"
         options={[
           "Hoy el cielo está",
@@ -36,7 +36,7 @@ export default function EvaluationView() {
         ]}
         correctIndex="2"
         explanation={
-          'Al tener tamaño de n-grama 3, el modelo coge las 3 últimas palabras: "El cielo está"'
+          'Al tener tamaño de contexto 3, el modelo coge las 3 últimas palabras: "El cielo está"'
         }
       />
 
@@ -54,8 +54,8 @@ export default function EvaluationView() {
           "Hoy está nublado. Es posible que llueva después.",
         ]}
         correctIndex="1"
-        explanation={`El tamaño del n-grama es 3, pero el n-grama "que hoy
-          está" no aparece en los ejemplos. Al probar con 2 como tamaño de n-grama,
+        explanation={`El tamaño del contexto es 3, pero el contexto "que hoy
+          está" no aparece en los ejemplos. Al probar con 2 como tamaño de contexto,
           obtenemos 2 coincidencias para "soleado" y 1 para "nublado", con lo que la
           palabra "soleado" es más probable de ser escogida.`}
       />
@@ -73,9 +73,9 @@ export default function EvaluationView() {
           "Hoy, el cielo está nublado. Es posible que llueva después.",
         ]}
         correctIndex="0"
-        explanation={`El segundo ejemplo tiene una coincidencia exacta con el n-grama.
-          El primero solo contribuiría a las probabilidades si el tamaño del n-grama fuese de tamaño 1
-          o si el segundo ejemplo coincidiera con un n-grama de tamaño 1.`}
+        explanation={`El segundo ejemplo tiene una coincidencia exacta con el contexto.
+          El primero solo contribuiría a las probabilidades si el tamaño del contexto fuese de tamaño 1
+          o si el segundo ejemplo coincidiera con un contexto de tamaño 1.`}
       />
 
       <br />
@@ -92,7 +92,7 @@ export default function EvaluationView() {
         ]}
         correctIndex="2"
         explanation={`El suavizado por interpolación causa que se consideren las coincidencias tanto
-          con el tamaño de n-grama actual como con n-gramas más pequeños. Por ello, en este caso, 
+          con el tamaño de contexto actual como con contextos más pequeños. Por ello, en este caso, 
           ambos ejemplos contribuyen a las probabilidades.`}
       />
 

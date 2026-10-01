@@ -1,6 +1,6 @@
 export interface LanguageModelProps {
   examples: string[];
-  ngramSize: number;
+  contextSize: number;
   topK: number;
   temperature: number;
   smoothing: ModelSmoothingType;

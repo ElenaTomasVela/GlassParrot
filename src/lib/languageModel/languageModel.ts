@@ -4,7 +4,7 @@ import { LanguageModel } from "./languageModelClass";
 
 export function useLanguageModel(defaultExamples: Example[] = []) {
   const [examples, setExamples] = useState<Example[]>(defaultExamples);
-  const [ngramSize, setNgramSize] = useState(3);
+  const [contextSize, setContextSize] = useState(3);
   const [temperature, setTemperature] = useState(1);
   const [topK, setTopK] = useState(10);
   const [model, setModel] = useState<LanguageModel>();
@@ -40,7 +40,7 @@ export function useLanguageModel(defaultExamples: Example[] = []) {
 
     setIsTraining(true);
     const props: LanguageModelProps = {
-      ngramSize,
+      contextSize,
       temperature,
       topK,
       smoothing,
@@ -61,7 +61,7 @@ export function useLanguageModel(defaultExamples: Example[] = []) {
   return {
     modelParams: {
       examples,
-      ngramSize,
+      contextSize,
       temperature,
       topK,
       smoothing,
@@ -72,7 +72,7 @@ export function useLanguageModel(defaultExamples: Example[] = []) {
     setExamples,
     removeExample,
     removeAllExamples,
-    setNgramSize,
+    setContextSize,
     setTemperature,
     setTopK,
     setSmoothing,

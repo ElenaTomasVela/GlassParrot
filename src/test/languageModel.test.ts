@@ -14,7 +14,7 @@ const exampleText = [
   "A very short sentence",
 ];
 const defaultParams: LanguageModelProps = {
-  ngramSize: 1,
+  contextSize: 1,
   examples: exampleText,
   temperature: 1,
   topK: 10,
@@ -27,18 +27,18 @@ const createModel = async (params: LanguageModelProps) => {
 };
 
 test.each(range(11, 1))(
-  "Models use N-gram size of %i correctly",
-  async (ngramSize: number) => {
+  "Models use context size of %i correctly",
+  async (contextSize: number) => {
     const params: LanguageModelProps = {
       ...defaultParams,
-      ngramSize: ngramSize,
+      contextSize: contextSize,
     };
 
     const model = await createModel(params);
 
     const ngrams = Object.keys(model.model).map((s) => s.split(" "));
 
-    ngrams.forEach((ngram) => expect(ngram).toBeArrayOfSize(ngramSize));
+    ngrams.forEach((ngram) => expect(ngram).toBeArrayOfSize(contextSize));
   },
 );
 
@@ -103,7 +103,7 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "none",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const model = await createModel(params);
@@ -116,7 +116,7 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "backoff",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const model = await createModel(params);
@@ -133,13 +133,13 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "interpolated",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const interpolatedModel = await createModel(params);
     const separateModels = await Promise.all(
-      range(4, 1).map((ngramSize) =>
-        createModel({ ...params, smoothing: "none", ngramSize }),
+      range(4, 1).map((contextSize) =>
+        createModel({ ...params, smoothing: "none", contextSize }),
       ),
     );
 

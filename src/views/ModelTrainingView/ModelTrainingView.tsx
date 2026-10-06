@@ -23,10 +23,10 @@ import { useController } from "./ModelTrainingView.controller";
 import type { ModelSmoothingType } from "@/lib/types";
 
 function getPredictionPlaceholder(
-  ngramSize: number,
+  contextSize: number,
   smoothing: ModelSmoothingType,
 ) {
-  const neededWords = smoothing === "none" ? ngramSize : 1;
+  const neededWords = smoothing === "none" ? contextSize : 1;
 
   return `Escribe al menos ${neededWords} palabra${neededWords === 1 ? "" : "s"} como entrada para tu modelo...`;
 }
@@ -57,8 +57,8 @@ export const ModelTrainingView = ({
             <div className="flex gap-4">
               <FieldGroup className="grid grid-cols-2 flex-1">
                 <ModelParamField
-                  name="ngramSize"
-                  label="Tamaño del n-grama"
+                  name="contextSize"
+                  label="Tamaño del contexto"
                   description={
                     <>
                       <p>
@@ -74,10 +74,10 @@ export const ModelTrainingView = ({
                   }
                 >
                   <Slider
-                    aria-label="Tamaño del n-grama"
-                    id="ngramSize"
-                    value={[data.modelParams.ngramSize]}
-                    onValueChange={actions.handleNgramSizeChange}
+                    aria-label="Tamaño del contexto"
+                    id="contextSize"
+                    value={[data.modelParams.contextSize]}
+                    onValueChange={actions.handleContextSizeChange}
                     min={1}
                     max={5}
                   />
@@ -141,16 +141,16 @@ export const ModelTrainingView = ({
                         <dd>
                           Si no encuentra ninguna palabra posible a completar,
                           intenta repetir el proceso asumiendo que el tamaño del
-                          n-grama es menor, hasta encontrar al menos una
+                          contexto es menor, hasta encontrar al menos una
                           coincidencia.
                         </dd>
                         <dt className="font-bold">Interpolado.</dt>
                         <dd>
                           Usa la probabilidad media calculada por el modelo
-                          actual y todos los que tengan tamaño de n-grama menor.
+                          actual y todos los que tengan tamaño de contexto menor.
                           Por ejemplo, si se aplica interpolación con tamaño de
-                          n-grama 3, se calculará la probabilidad a partir de la
-                          predicción con tamaños de n-grama 3, 2 y 1.
+                          contexto 3, se calculará la probabilidad a partir de la
+                          predicción con tamaños de contexto 3, 2 y 1.
                         </dd>
                       </dl>
                     </div>
@@ -174,7 +174,7 @@ export const ModelTrainingView = ({
               <div className="flex-1 pl-10">
                 <UnderlinedWords
                   text="El sol de la mañana se alza frente el cielo"
-                  underlinedWords={data.modelParams.ngramSize}
+                  underlinedWords={data.modelParams.contextSize}
                 />
                 ...
                 <div className="h-60">
@@ -294,7 +294,7 @@ export const ModelTrainingView = ({
               data.model === undefined
                 ? "Entrena un modelo antes de probar."
                 : getPredictionPlaceholder(
-                    data.model.ngramSize,
+                    data.model.contextSize,
                     data.model.smoothing,
                   )
             }
@@ -312,13 +312,13 @@ export const ModelTrainingView = ({
         {
           <div className="flex flex-col gap-3 flex-1" id="prediction-charts">
             <div>
-              Probabilidades de siguiente palabra a partir del n-grama:{" "}
+              Probabilidades de siguiente palabra a partir del contexto:{" "}
               <b>
                 {!data.isGenerateNextWordDisabled &&
                   data.modelInput
                     .trim()
                     .split(" ")
-                    .slice(-data.model!.ngramSize)
+                    .slice(-data.model!.contextSize)
                     .join(" ")}
               </b>
             </div>

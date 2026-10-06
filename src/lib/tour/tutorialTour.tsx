@@ -115,16 +115,10 @@ export const tutorialTourSteps: StepType[] = [
     padding: 0,
     position: "center",
     content: (
-      <>
-        <p>
-          Parece que el modelo ha escogido la palabra "soleado". Este modelo usa
-          las 3 últimas palabras de la entrada como contexto: "el día está".
-        </p>
-        <br />
-        <p>
-          Este conjunto de palabras lo denominamos <b>n-grama</b>.
-        </p>
-      </>
+      <p>
+        Parece que el modelo ha escogido la palabra "soleado". Este modelo usa
+        las 3 últimas palabras de la entrada como contexto: "el día está".
+      </p>
     ),
   },
   {
@@ -132,7 +126,7 @@ export const tutorialTourSteps: StepType[] = [
     content: (
       <>
         <p>
-          Podemos ver que en los primeros 3 ejemplos, ese n-grama aparece
+          Podemos ver que en los primeros 3 ejemplos, ese contexto aparece
           seguido de la palabra "soleado".
         </p>
         <br />
@@ -148,7 +142,7 @@ export const tutorialTourSteps: StepType[] = [
     content: (
       <>
         <p>
-          Añade 2 frases más de ejemplo que contengan el n-grama "el día está"
+          Añade 2 frases más de ejemplo que contengan el contexto "el día está"
           seguido de una palabra distinta palabra cada vez: "Nublado" y
           "lluvioso".
         </p>
@@ -221,7 +215,7 @@ export const tutorialTourSteps: StepType[] = [
       <>
         <p>
           Probemos otra cosa. ¿Qué crees que pasará cuando el modelo reciba como
-          entrada un n-grama que no ha visto antes?
+          entrada un contexto que no ha visto antes?
         </p>
         <br />
         <div className="flex gap-2 justify-around flex-wrap">
@@ -235,7 +229,7 @@ export const tutorialTourSteps: StepType[] = [
             className="flex-1"
             onClick={() => props.setCurrentStep((n) => n + 1)}
           >
-            Probará con un n-grama más pequeño
+            Probará con un contexto más pequeño
           </Button>
         </div>
       </>
@@ -258,13 +252,13 @@ export const tutorialTourSteps: StepType[] = [
       <>
         <p>
           Parece que el modelo sigue pudiendo realizar predicciones. Esta vez ha
-          tomado como referencia la palabra "está" en vez del n-grama completo.
+          tomado como referencia la palabra "está" en vez del contexto completo.
         </p>
         <br />
         <p>
           Aunque, quizás sería conveniente poder cambiar este comportamiento
           para tener un modelo más estricto. O quizás podríamos ver cómo se
-          comporta el modelo con tamaños más grandes o pequeños de n-grama.
+          comporta el modelo con tamaños más grandes o pequeños de contexto.
           ¿Cómo manejamos esto en esta herramienta?
         </p>
       </>

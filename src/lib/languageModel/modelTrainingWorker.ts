@@ -5,34 +5,25 @@ import type { ModelSmoothingType } from "../types";
 export interface TrainingWorkerParams {
   tokens: RegExpMatchArray;
   smoothing: ModelSmoothingType;
-  ngramSize: number;
-  temperature: number;
+  contextSize: number;
 }
 
 function buildRecord(
   tokens: string[],
   smoothing: ModelSmoothingType,
-  ngramSize: number,
-  temperature: number,
+  contextSize: number,
 ) {
   const counter: Record<string, Record<string, number>> = {};
 
   const ngramIterTarget =
-    smoothing === "backoff" || smoothing === "interpolated" ? 1 : ngramSize;
+    smoothing === "backoff" || smoothing === "interpolated" ? 1 : contextSize;
 
   for (
-    let currentNgramSize = ngramSize;
-    currentNgramSize >= ngramIterTarget;
-    currentNgramSize--
+    let currentContextSize = contextSize;
+    currentContextSize >= ngramIterTarget;
+    currentContextSize--
   ) {
-    addNgramCounts(tokens, currentNgramSize, counter);
-  }
-
-  for (const ngram of Object.keys(counter)) {
-    for (const targetWord of Object.keys(counter[ngram])) {
-      const value = counter[ngram][targetWord];
-      counter[ngram][targetWord] = Math.pow(value, 1 / temperature);
-    }
+    addNgramCounts(tokens, currentContextSize, counter);
   }
 
   return counter;
@@ -40,22 +31,22 @@ function buildRecord(
 
 function addNgramCounts(
   tokens: string[],
-  ngramSize: number,
+  contextSize: number,
   counter: Record<string, Record<string, number>>,
 ) {
-  for (let index = 0; index < tokens.length - ngramSize; index++) {
-    const ngram = tokens.slice(index, index + ngramSize).join(" ");
-    const targetWord = tokens[index + ngramSize];
+  for (let index = 0; index < tokens.length - contextSize; index++) {
+    const context = tokens.slice(index, index + contextSize).join(" ");
+    const targetWord = tokens[index + contextSize];
 
-    counter[ngram] ??= {};
+    counter[context] ??= {};
 
-    counter[ngram][targetWord] = (counter[ngram][targetWord] || 0) + 1;
+    counter[context][targetWord] = (counter[context][targetWord] || 0) + 1;
   }
 }
 
 self.onmessage = (e: MessageEvent<TrainingWorkerParams>) => {
-  const { ngramSize, smoothing, temperature, tokens } = e.data;
-  const counter = buildRecord(tokens, smoothing, ngramSize, temperature);
+  const { contextSize, smoothing, tokens } = e.data;
+  const counter = buildRecord(tokens, smoothing, contextSize);
 
   self.postMessage(counter);
 };

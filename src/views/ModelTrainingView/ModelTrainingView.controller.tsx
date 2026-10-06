@@ -15,7 +15,7 @@ export const useController = (defaultExampleIndex?: number) => {
     modelParams,
     addExample,
     compileModel,
-    setNgramSize,
+    setContextSize,
     setTemperature,
     setTopK,
     removeExample,
@@ -53,8 +53,8 @@ export const useController = (defaultExampleIndex?: number) => {
     setModelInput(event.target.value);
   };
 
-  const handleNgramSizeChange = ([ngramSize]: [number]) => {
-    setNgramSize(ngramSize);
+  const handleContextSizeChange = ([contextSize]: [number]) => {
+    setContextSize(contextSize);
   };
 
   const handleTemperatureChange = ([temperature]: [number]) => {
@@ -80,7 +80,7 @@ export const useController = (defaultExampleIndex?: number) => {
     removeAllExamples();
   };
 
-  const handleCompileModel = async () => {
+  const handleCompileModel = () => {
     compileModel();
   };
 
@@ -156,7 +156,7 @@ export const useController = (defaultExampleIndex?: number) => {
   };
 
   const nextWordStats =
-    model?.getNextWordProbabilities(modelInput.toLowerCase()) || {};
+    model?.getNextWordWeights(modelInput.toLowerCase()) || {};
 
   const nextWordBarData: ChartData<"bar"> = {
     labels: Object.keys(nextWordStats),
@@ -200,7 +200,7 @@ export const useController = (defaultExampleIndex?: number) => {
         !model ||
         !modelInput ||
         !Object.keys(nextWordStats).length ||
-        (modelInput.trim().split(" ").length < modelParams.ngramSize &&
+        (modelInput.trim().split(" ").length < modelParams.contextSize &&
           modelParams.smoothing == "none"),
       isTrainingButtonDisabled: isTraining || !modelParams.examples.length,
       isTraining,
@@ -213,7 +213,7 @@ export const useController = (defaultExampleIndex?: number) => {
       handleGenerateNextWord,
       handleModelInputChange,
       setIsAdvancedModeEnabled,
-      handleNgramSizeChange,
+      handleContextSizeChange,
       handleDeleteAllExamples,
       handleUploadedFiles,
       handleTemperatureChange,

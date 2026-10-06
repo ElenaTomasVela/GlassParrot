@@ -14,7 +14,7 @@ const exampleText = [
   "A very short sentence",
 ];
 const defaultParams: LanguageModelProps = {
-  ngramSize: 1,
+  contextSize: 1,
   examples: exampleText,
   temperature: 1,
   topK: 10,
@@ -27,18 +27,18 @@ const createModel = async (params: LanguageModelProps) => {
 };
 
 test.each(range(11, 1))(
-  "Models use N-gram size of %i correctly",
-  async (ngramSize: number) => {
+  "Models use context size of %i correctly",
+  async (contextSize: number) => {
     const params: LanguageModelProps = {
       ...defaultParams,
-      ngramSize: ngramSize,
+      contextSize: contextSize,
     };
 
     const model = await createModel(params);
 
     const ngrams = Object.keys(model.model).map((s) => s.split(" "));
 
-    ngrams.forEach((ngram) => expect(ngram).toBeArrayOfSize(ngramSize));
+    ngrams.forEach((ngram) => expect(ngram).toBeArrayOfSize(contextSize));
   },
 );
 
@@ -52,7 +52,7 @@ test.each(range(11, 1))("Models use Top-K of %i correctly", async (topk) => {
   };
 
   const model = await createModel(params);
-  const predictions = model.getNextWordProbabilities("test");
+  const predictions = model.getNextWordWeights("test");
   const nPredicts = Object.keys(predictions).length;
 
   expect(
@@ -73,7 +73,7 @@ describe("Temperature modifies predictions correctly", async () => {
       examples,
     };
     const model = await createModel(params);
-    const probabilities = model.getNextWordProbabilities("test");
+    const probabilities = model.getNextWordWeights("test");
 
     return coefVariation(Object.values(probabilities));
   };
@@ -103,12 +103,12 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "none",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const model = await createModel(params);
 
-    const singleWordProbs = model.getNextWordProbabilities("This");
+    const singleWordProbs = model.getNextWordWeights("This");
     expect(Object.keys(singleWordProbs)).toBeEmpty();
   });
 
@@ -116,15 +116,15 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "backoff",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const model = await createModel(params);
 
-    const singleWordProbs = model.getNextWordProbabilities("very");
+    const singleWordProbs = model.getNextWordWeights("very");
     expect(Object.keys(singleWordProbs)).toBeArrayOfSize(3);
 
-    const firstMatchingProbs = model.getNextWordProbabilities("there is very");
+    const firstMatchingProbs = model.getNextWordWeights("there is very");
     expect(Object.keys(firstMatchingProbs)).toBeArrayOfSize(1);
     expect(firstMatchingProbs).toContainKey("little");
   });
@@ -133,17 +133,17 @@ describe("Smoothing is applied correctly:", () => {
     const params: LanguageModelProps = {
       ...defaultParams,
       smoothing: "interpolated",
-      ngramSize: 3,
+      contextSize: 3,
     };
 
     const interpolatedModel = await createModel(params);
     const separateModels = await Promise.all(
-      range(4, 1).map((ngramSize) =>
-        createModel({ ...params, smoothing: "none", ngramSize }),
+      range(4, 1).map((contextSize) =>
+        createModel({ ...params, smoothing: "none", contextSize }),
       ),
     );
 
-    const singleWordProbs = interpolatedModel.getNextWordProbabilities("very");
+    const singleWordProbs = interpolatedModel.getNextWordWeights("very");
     const singleWordProbsValues = Object.values(singleWordProbs);
     expect(Object.keys(singleWordProbs)).toBeArrayOfSize(3);
     expect(singleWordProbs).toContainAllKeys(["short", "little", "long"]);
@@ -153,12 +153,12 @@ describe("Smoothing is applied correctly:", () => {
     ).toBe(true);
 
     const interpolatedProbs =
-      interpolatedModel.getNextWordProbabilities("that is very");
+      interpolatedModel.getNextWordWeights("that is very");
     expect(Object.keys(interpolatedProbs)).toBeArrayOfSize(3);
     expect(interpolatedProbs).toContainAllKeys(["short", "little", "long"]);
 
     const individualProbs = separateModels.map((model) =>
-      normalizeRecordValues(model.getNextWordProbabilities("that is very")),
+      normalizeRecordValues(model.getNextWordWeights("that is very")),
     );
 
     const averageIndivProbs = sumRecordValues(individualProbs);

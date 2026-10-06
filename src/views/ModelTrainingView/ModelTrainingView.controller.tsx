@@ -80,7 +80,7 @@ export const useController = (defaultExampleIndex?: number) => {
     removeAllExamples();
   };
 
-  const handleCompileModel = async () => {
+  const handleCompileModel = () => {
     compileModel();
   };
 

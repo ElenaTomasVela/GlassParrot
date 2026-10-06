@@ -115,12 +115,10 @@ export const tutorialTourSteps: StepType[] = [
     padding: 0,
     position: "center",
     content: (
-      <>
-        <p>
-          Parece que el modelo ha escogido la palabra "soleado". Este modelo usa
-          las 3 últimas palabras de la entrada como contexto: "el día está".
-        </p>
-      </>
+      <p>
+        Parece que el modelo ha escogido la palabra "soleado". Este modelo usa
+        las 3 últimas palabras de la entrada como contexto: "el día está".
+      </p>
     ),
   },
   {

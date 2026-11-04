@@ -193,7 +193,7 @@ export const ModelTrainingView = ({
       <section id="training-section">
         <H1>Entrenamiento</H1>
         <form action={actions.handleTrainingExampleSubmit}>
-          <div className="flex gap-2 mb-2 not-lg:flex-col">
+          <div className="flex gap-2 mb-2 not-lg:flex-col max-h-80">
             <Textarea
               className="flex-1 resize-none min-h-50"
               placeholder="Escribe texto de entrenamiento..."
